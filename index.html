@@ -327,7 +327,7 @@ textarea.sm{min-height:120px;padding:12px}
   function set(patch) { Object.assign(S, typeof patch === 'function' ? patch(S) : patch); save(); render(); }
 
   // 通知與提示列只在剛出現時播動畫；提示列 4 秒後自動收起
-  var freshAt = 0, snackTimer = null, shownSnack = null;
+  var freshAt = 0, snackTimer = null, shownSnack = null, dToastTimer = null, shownDToast = null;
   function markFresh() { freshAt = Date.now(); }
   function isFresh() { return Date.now() - freshAt < 400; }
 
@@ -808,6 +808,13 @@ textarea.sm{min-height:120px;padding:12px}
       clearTimeout(snackTimer);
       if (S.snack) snackTimer = setTimeout(function () { S.snack = null; render(); }, 4000);
     }
+    // 設計師端的 App 內通知 6 秒後自動收起，避免擋住返回鍵
+    var dKey = S.dToast ? S.dToast.text : null;
+    if (dKey !== shownDToast) {
+      shownDToast = dKey;
+      clearTimeout(dToastTimer);
+      if (S.dToast) dToastTimer = setTimeout(function () { S.dToast = null; save(); render(); }, 6000);
+    }
   }
 
   // ---------- 操作 ----------
@@ -817,11 +824,11 @@ textarea.sm{min-height:120px;padding:12px}
   }
   var ACT = {
     go: function (arg) {
-      var patch = { dScreen: arg };
+      var patch = { dScreen: arg, dToast: null };
       if (arg === 'albums') patch.dAlbum = null;
       set(patch);
     },
-    tab: function (arg) { set({ cTab: arg, cConfirm: null, cAlbum: null }); },
+    tab: function (arg) { set({ cTab: arg, cConfirm: null, cAlbum: null, toast: null }); },
     view: function (arg) {
       var patch = { view: arg, snack: null };
       if (arg === 'client') patch.clientNew = false; else patch.designerNew = false;

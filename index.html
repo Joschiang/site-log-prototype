@@ -131,6 +131,25 @@ textarea.sm{min-height:120px;padding:12px}
 .album .meta{padding:10px 12px}
 .album .name{font-size:15px;font-weight:700}
 
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:12px;background:var(--gray-l)}
+.seg button{height:36px;border:none;border-radius:9px;background:transparent;font-size:13px;font-weight:500;color:var(--ink2)}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(24,33,43,.15)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:11px;color:var(--ink2)}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.mchips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.mchip{flex-shrink:0;height:36px;padding:0 12px;border:1px solid var(--gray-b);border-radius:18px;background:#fff;font-size:13px}
+.mchip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.cal-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+.cal{border-collapse:collapse;font-size:10px}
+.cal th,.cal td{border:1px solid var(--line2);height:26px;min-width:22px;padding:0;text-align:center;font-weight:500;color:var(--ink2)}
+.cal th.nm{position:sticky;left:0;z-index:1;min-width:96px;max-width:96px;padding:0 6px;background:#fff;text-align:left;font-size:11px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal .we{background:#D5DAE0}
+.cal th.good{background:#D9A3A0;color:#3B1513}
+.cal .today{box-shadow:inset 0 0 0 2px var(--amber)}
+.date{flex:1;min-width:0;height:44px;padding:0 8px;border:1px solid var(--gray-b);border-radius:10px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+.mini{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}
+.fld{flex:1;min-width:0}
+
 .big{font-size:36px;font-weight:700;color:var(--teal)}
 .dotrow{display:flex;gap:10px;align-items:flex-start;padding:6px 0}
 .dot{width:8px;height:8px;border-radius:4px;margin-top:7px;flex-shrink:0}
@@ -273,6 +292,36 @@ textarea.sm{min-height:120px;padding:12px}
     { t: D('10/08'), label: '浴室防水層', tone: '#DED9D1', trade: '防水' },
     { t: D('10/11'), label: '浴室試水', tone: '#E0DCD4', trade: '防水' }
   ];
+  // 屋主版工程時刻表（大工種，設計師另外排；格式參照 PIZZA 店工程時刻表）
+  var PLAN = [
+    { id: 1, name: '保護／拆除工程', type: 'work', start: '2025-08-20', end: '2025-08-29', status: 'done' },
+    { id: 2, name: '木工放樣／隔間', type: 'work', start: '2025-09-01', end: '2025-09-05', status: 'done' },
+    { id: 3, name: '鋁窗丈量', type: 'measure', start: '2025-09-01', end: '2025-09-01', status: 'done' },
+    { id: 4, name: '水電工程／空調工程', type: 'work', start: '2025-09-08', end: '2025-09-21', status: 'done' },
+    { id: 5, name: '泥作／防水工程', type: 'work', start: '2025-09-22', end: '2025-10-12', status: 'done' },
+    { id: 6, name: '泥作／磁磚', type: 'work', start: '2025-10-13', end: '2025-10-31', status: 'doing' },
+    { id: 7, name: '木作工程', type: 'work', start: '2025-10-27', end: '2025-12-27', status: 'doing' },
+    { id: 8, name: '鋁窗安裝', type: 'work', start: '2025-11-20', end: '2025-11-21', status: 'todo' },
+    { id: 9, name: '油漆／塗料', type: 'work', start: '2025-12-22', end: '2026-01-25', status: 'todo' },
+    { id: 10, name: '石材丈量', type: 'measure', start: '2025-12-29', end: '2025-12-29', status: 'todo' },
+    { id: 11, name: '空調收尾', type: 'work', start: '2026-01-26', end: '2026-01-30', status: 'todo' },
+    { id: 12, name: '水電收尾', type: 'work', start: '2026-01-26', end: '2026-01-30', status: 'todo' },
+    { id: 13, name: '石材安裝', type: 'work', start: '2026-01-28', end: '2026-01-30', status: 'todo' },
+    { id: 14, name: '木地板', type: 'work', start: '2026-02-02', end: '2026-02-04', status: 'todo' },
+    { id: 15, name: '清潔', type: 'work', start: '2026-02-05', end: '2026-02-06', status: 'todo' },
+    { id: 16, name: '軟裝進場', type: 'work', start: '2026-02-09', end: '2026-02-11', status: 'todo' },
+    { id: 17, name: '預留時間', type: 'buffer', start: '2026-02-12', end: '2026-02-12', status: 'todo' },
+    { id: 18, name: '交屋', type: 'handover', start: '2026-02-13', end: '2026-02-13', status: 'todo' }
+  ];
+  var GOOD_DAYS = ['2025-08-20', '2025-10-06', '2025-11-10', '2026-02-13'];
+  var PLAN_TYPES = { work: { label: '工程中', color: '#EDB98A' }, measure: { label: '丈量', color: '#BFDCE6' }, buffer: { label: '預留時間', color: '#F3DCC8' }, handover: { label: '交屋', color: '#A99BCB' } };
+  var PLAN_STATUS = { todo: '未開始', doing: '施工中', done: '已完成' };
+  var PLAN_MONTHS = ['2025-08', '2025-09', '2025-10', '2025-11', '2025-12', '2026-01', '2026-02'];
+  function isoT(s) { var p = s.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
+  function isoOf(t) { var x = new Date(t); return x.getUTCFullYear() + '-' + pad(x.getUTCMonth() + 1) + '-' + pad(x.getUTCDate()); }
+  function planRange(r) { var a = isoT(r.start), b = isoT(r.end); return md(a) + (a === b ? '' : ' – ' + md(b)); }
+  function planSorted(list) { return list.slice().sort(function (a, b) { return isoT(a.start) - isoT(b.start) || a.id - b.id; }); }
+
   var TODOS = ['泥作修補浴室收邊（10/31）', '跟水電約主臥插座修正時間'];
   var NOTE = '鄰居反映午休時段噪音，已向管委會報備，13:00 前不做切割。';
   var REPORT = '★每週工程匯報\n▫114/10/27（一）～114/11/02（日）\n\n▫本週進度：\n10/27（一）磁磚保護\n10/27（一）～10/31（五）訂製門及窗框安裝、泥作崁縫填實\n10/27（一）～11/02（日）隔間雙面封板（隔音棉、隔熱棉）\n10/30（四）鋁門窗複量完成並下定\n\n▫下週進度：\n11/03（一）～11/16（日）天花板角材施作\n11/05（三）燈具位置及冷氣檢修口放樣\n\n謝謝您\n\nHave a great weekend!';
@@ -314,12 +363,14 @@ textarea.sm{min-height:120px;padding:12px}
         { id: 4, title: '鋁窗缺料，交期延後一週', detail: '廠商回覆 11/20 進場，不影響木作，油漆前要裝好。', level: '影響工期', status: '已解決', at: '10/27', converted: false }
       ],
       nextConfirm: 4, nextIssue: 5,
+      plan: JSON.parse(JSON.stringify(PLAN)), planPub: JSON.parse(JSON.stringify(PLAN)), planPubAt: '114/10/27（一）09:30', nextPlan: 19,
+      cMonth: '2025-10', cPlanView: 'grid',
       report: REPORT
     };
   }
 
   // ---------- 狀態（存在這台裝置的瀏覽器，重整不會消失） ----------
-  var KEY = 'site-log-proto-v2';
+  var KEY = 'site-log-proto-v3';
   var S;
   try { S = JSON.parse(localStorage.getItem(KEY)) || initState(); } catch (e) { S = initState(); }
   S.snack = null; // 提示列只在當下出現，重整後不再跳出
@@ -349,6 +400,8 @@ textarea.sm{min-height:120px;padding:12px}
   }
   function openConfirms() { return S.confirms.filter(function (c) { return c.status === 'open'; }); }
   function doneConfirms() { return S.confirms.filter(function (c) { return c.status === 'done'; }); }
+  function planDirty() { return JSON.stringify(S.plan) !== JSON.stringify(S.planPub); }
+  function planInvalid() { return S.plan.filter(function (r) { return !r.name.trim() || !r.start || !r.end || isoT(r.end) < isoT(r.start); }).length > 0; }
   function openIssues() { return S.issues.filter(function (i) { return i.status !== '已解決'; }); }
   function findById(list, id) { for (var i = 0; i < list.length; i++) if (String(list[i].id) === String(id)) return list[i]; return null; }
 
@@ -476,6 +529,11 @@ textarea.sm{min-height:120px;padding:12px}
           '<div class="between"><div class="h">本週工程匯報</div><span class="chip ' + (S.reportSent ? 'teal">已發送' : 'amber">草稿') + '</span></div>' +
           '<div class="body">114/10/27（一）～ 114/11/02（日）· 系統已依進度表產生草稿</div>' +
           '<button class="btn sm line" data-act="go" data-arg="report">查看週報</button>' +
+        '</div>' +
+        '<div class="card stack">' +
+          '<div class="between"><div class="h">進度表</div>' + (planDirty() ? '<span class="chip amber">屋主版有未更新的修改</span>' : '<span class="chip gray">內外分開</span>') + '</div>' +
+          '<div class="body">內部看細項工程；屋主只看大工種的工程時刻表，兩份分開排。</div>' +
+          '<div class="btns" style="margin-top:0"><button class="btn sm line" data-act="go" data-arg="sched">內部細項</button><button class="btn sm line-teal" data-act="go" data-arg="plan">屋主版時刻表</button></div>' +
         '</div>' +
         '<div class="card stack">' +
           '<div class="between"><div class="h">內部相簿</div><span class="chip gray">依工種</span></div>' +
@@ -654,6 +712,59 @@ textarea.sm{min-height:120px;padding:12px}
     '</div>';
   }
 
+  function dSched() {
+    var months = ['9/01', '10/01', '11/01', '12/01', '1/01', '2/01'].map(function (m) { return '<span style="left:' + posPct(D(m)) + '%">' + m.split('/')[0] + '月</span>'; }).join('');
+    return '<div class="screen">' +
+      navbar('go', 'home', '返回案場', '內部細項進度表', 'Excel 匯入的完整工項 · 只有工作室看得到') +
+      '<div class="scroll" data-scroll="d-sched">' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip lg teal">已完成 ' + COUNT.done + '</span><span class="chip lg amber">施工中 ' + COUNT.doing + '</span><span class="chip lg gray">未開始 ' + COUNT.todo + '</span></div>' +
+        '<div class="card" style="padding:14px 16px">' +
+          '<div class="between" style="margin-bottom:10px"><div class="h">細項工程</div><div class="muted" style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:12px;background:var(--amber)"></span>今天</div></div>' +
+          '<button class="btn sm line" style="margin-bottom:10px" data-act="done" aria-expanded="' + !!S.showDone + '">' + (S.showDone ? '收合已完成的 ' : '顯示已完成的 ') + COUNT.done + ' 項</button>' +
+          '<div class="months" aria-hidden="true">' + months + '</div>' +
+          ROWS.filter(function (r) { return S.showDone || r.st !== 'done'; }).map(function (r) {
+            return '<div class="tl"><div class="between" style="align-items:flex-start"><span class="name">' + r.name + '</span><span class="chip ' + ST_CHIP[r.st] + '">' + ST_LABEL[r.st] + '</span></div>' +
+              '<div class="range">' + r.range + '</div>' +
+              '<div class="gantt" aria-hidden="true"><i class="seg" style="left:' + r.left + '%;width:' + r.width + '%;background:' + ST_BAR[r.st] + '"></i><i class="now" style="left:' + TODAY_PCT + '%"></i></div></div>';
+          }).join('') +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function dPlan() {
+    var dirty = planDirty();
+    var invalid = planInvalid();
+    function opts(map, cur) { return Object.keys(map).map(function (k) { return '<option value="' + k + '"' + (k === cur ? ' selected' : '') + '>' + (map[k].label || map[k]) + '</option>'; }).join(''); }
+    return '<div class="screen">' +
+      navbar('go', 'home', '返回案場', '屋主版工程時刻表', '大工種 · 跟內部細項分開排', dirty ? '<span class="chip amber">未更新</span>' : '<span class="chip teal">已是最新</span>') +
+      '<div class="scroll" data-scroll="d-plan">' +
+        '<div class="tip">' + I.eye + '<span>這份就是屋主在「進度」分頁看到的工程時刻表。改完按「更新給屋主」才會生效；上次更新：' + esc(S.planPubAt) + '</span></div>' +
+        S.plan.map(function (r) {
+          var bad = !r.name.trim() || !r.start || !r.end || isoT(r.end) < isoT(r.start);
+          var id = r.id;
+          return '<div class="card' + (bad ? ' warn' : '') + '" style="padding:12px 14px">' +
+            '<div class="between" style="gap:8px"><label for="pn' + id + '" class="sr-only">工種名稱</label>' +
+              '<input id="pn' + id + '" class="txt" data-plan="' + id + ':name" value="' + esc(r.name) + '" autocomplete="off">' +
+              '<button class="add" style="border-color:var(--gray-b);color:var(--ink2)" data-act="planDel" data-arg="' + id + '" aria-label="移除 ' + esc(r.name) + '">移除</button></div>' +
+            '<div class="btns">' +
+              '<div class="fld"><label for="ps' + id + '" class="mini">開始</label><input id="ps' + id + '" type="date" class="date" style="width:100%" data-plan="' + id + ':start" value="' + r.start + '"></div>' +
+              '<div class="fld"><label for="pe' + id + '" class="mini">結束</label><input id="pe' + id + '" type="date" class="date" style="width:100%" data-plan="' + id + ':end" value="' + r.end + '"></div>' +
+            '</div>' +
+            '<div class="btns">' +
+              '<div class="fld"><label for="pt' + id + 'x" class="mini">狀態</label><select id="pt' + id + 'x" class="sel" data-plan="' + id + ':status">' + opts(PLAN_STATUS, r.status) + '</select></div>' +
+              '<div class="fld"><label for="py' + id + '" class="mini">類型</label><select id="py' + id + '" class="sel" data-plan="' + id + ':type">' + opts(PLAN_TYPES, r.type) + '</select></div>' +
+            '</div>' +
+            (bad ? '<div class="muted" style="color:var(--amber-d);margin-top:8px">請填工種名稱，結束日不能早於開始日</div>' : '') +
+          '</div>';
+        }).join('') +
+        '<button class="btn sm line" data-act="planAdd">＋ 新增一列</button>' +
+      '</div>' +
+      '<div class="footer">' + (invalid ? '<div class="muted" style="color:var(--amber-d);margin-bottom:8px;text-align:center">有欄位要修正才能更新</div>' : '') +
+        '<button class="btn teal" data-act="planPub" aria-disabled="' + (invalid || !dirty) + '">' + (dirty ? '更新給屋主' : '屋主看到的已是最新版本') + '</button></div>' +
+    '</div>';
+  }
+
   // ---------- 屋主端 ----------
   function feed() {
     var list = PAST_LOGS.map(function (l) { return { date: roc(l.t), trades: l.trades, entries: l.entries, photos: l.photos, today: false }; });
@@ -694,11 +805,21 @@ textarea.sm{min-height:120px;padding:12px}
         '<button class="btn sm line-teal" style="margin-top:10px" data-act="tab" data-arg="log">看工程日誌</button>' +
       '</div>' +
       (S.reportSent ? '<div class="card"><div class="h" style="margin-bottom:8px">本週工程匯報</div><div class="pre">' + esc(S.sentReport) + '</div></div>' : '') +
-      '<div class="card"><div class="h" style="margin-bottom:6px">目前施工中</div>' +
-        DOING.map(function (r) { return '<div class="dotrow"><span class="dot" style="background:var(--amber)"></span><div><div class="li" style="padding:0">' + r.name + '</div><div class="muted">' + r.range + '</div></div></div>'; }).join('') +
+      planBrief();
+  }
+
+  // 首頁的「目前施工中／接下來」也只用屋主版大工種
+  function planBrief() {
+    var plan = planSorted(S.planPub);
+    var doing = plan.filter(function (r) { return r.status === 'doing'; });
+    var next = plan.filter(function (r) { return r.status === 'todo'; }).slice(0, 2);
+    function item(r, color) { return '<div class="dotrow"><span class="dot" style="background:' + color + '"></span><div><div class="li" style="padding:0">' + esc(r.name) + '</div><div class="muted">' + planRange(r) + '</div></div></div>'; }
+    return '<div class="card"><div class="h" style="margin-bottom:6px">目前施工中</div>' +
+        (doing.length ? doing.map(function (r) { return item(r, 'var(--amber)'); }).join('') : '<div class="body">目前沒有施工中的工種</div>') +
       '</div>' +
-      '<div class="card"><div class="h" style="margin-bottom:6px">下週預告</div>' +
-        NEXT_WEEK.map(function (r) { return '<div class="dotrow"><span class="dot" style="background:var(--bar-todo)"></span><div><div class="li" style="padding:0">' + r.name + '</div><div class="muted">' + r.range + '</div></div></div>'; }).join('') +
+      '<div class="card"><div class="h" style="margin-bottom:6px">接下來</div>' +
+        next.map(function (r) { return item(r, 'var(--bar-todo)'); }).join('') +
+        '<button class="btn sm line-teal" style="margin-top:8px" data-act="tab" data-arg="timeline">看完整工程時刻表</button>' +
       '</div>';
   }
 
@@ -721,19 +842,53 @@ textarea.sm{min-height:120px;padding:12px}
       '<div class="muted">送出後設計師會收到通知，系統會留下確認時間。</div>';
   }
 
+  // 屋主端「進度」：大工種工程時刻表（PIZZA 店格式），可切月曆／清單
   function cTimeline() {
-    var months = ['9/01', '10/01', '11/01', '12/01', '1/01', '2/01'].map(function (m) { return '<span style="left:' + posPct(D(m)) + '%">' + m.split('/')[0] + '月</span>'; }).join('');
-    return '<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip lg teal">已完成 ' + COUNT.done + '</span><span class="chip lg amber">施工中 ' + COUNT.doing + '</span><span class="chip lg gray">未開始 ' + COUNT.todo + '</span></div>' +
-      '<div class="card" style="padding:14px 16px">' +
-        '<div class="between" style="margin-bottom:10px"><div class="h">工程進度表</div><div class="muted" style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:12px;background:var(--amber)"></span>今天</div></div>' +
-        '<button class="btn sm line" style="margin-bottom:10px" data-act="done" aria-expanded="' + !!S.showDone + '">' + (S.showDone ? '收合已完成的 ' : '顯示已完成的 ') + COUNT.done + ' 項</button>' +
-        '<div class="months" aria-hidden="true">' + months + '</div>' +
-        ROWS.filter(function (r) { return S.showDone || r.st !== 'done'; }).map(function (r) {
-          return '<div class="tl"><div class="between" style="align-items:flex-start"><span class="name">' + r.name + '</span><span class="chip ' + ST_CHIP[r.st] + '">' + ST_LABEL[r.st] + '</span></div>' +
-            '<div class="range">' + r.range + '</div>' +
-            '<div class="gantt" aria-hidden="true"><i class="seg" style="left:' + r.left + '%;width:' + r.width + '%;background:' + ST_BAR[r.st] + '"></i><i class="now" style="left:' + TODAY_PCT + '%"></i></div></div>';
-        }).join('') +
-      '</div>';
+    var plan = planSorted(S.planPub);
+    var cnt = { done: 0, doing: 0, todo: 0 };
+    plan.forEach(function (r) { cnt[r.status]++; });
+    var legend = '<div class="legend"><span><i style="background:#D9A3A0"></i>好日子</span>' +
+      Object.keys(PLAN_TYPES).map(function (k) { return '<span><i style="background:' + PLAN_TYPES[k].color + '"></i>' + PLAN_TYPES[k].label + '</span>'; }).join('') +
+      '<span><i style="background:#D5DAE0"></i>週末</span></div>';
+    var body;
+    if (S.cPlanView === 'list') {
+      body = '<div class="card" style="padding:6px 16px">' + plan.map(function (r) {
+        return '<div class="tl" style="padding:12px 0"><div class="between" style="align-items:flex-start"><span class="name" style="font-size:14px">' + esc(r.name) + '</span><span class="chip ' + ST_CHIP[r.status] + '">' + PLAN_STATUS[r.status] + '</span></div>' +
+          '<div class="range" style="font-size:12px;display:flex;align-items:center;gap:6px"><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:' + PLAN_TYPES[r.type].color + '"></i>' + planRange(r) + '</div></div>';
+      }).join('') + '</div>';
+    } else {
+      body = '<div class="mchips" role="group" aria-label="選擇月份">' + PLAN_MONTHS.map(function (m) {
+          return '<button class="mchip" data-act="calm" data-arg="' + m + '" aria-pressed="' + (S.cMonth === m) + '">' + (+m.slice(5)) + ' 月</button>';
+        }).join('') + '</div>' +
+        legend + monthGrid(S.cMonth, plan) +
+        '<div class="muted">左右滑動看整個月；橘框是今天</div>';
+    }
+    return '<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip lg teal">已完成 ' + cnt.done + '</span><span class="chip lg amber">施工中 ' + cnt.doing + '</span><span class="chip lg gray">未開始 ' + cnt.todo + '</span></div>' +
+      '<div class="between"><div class="h" style="font-size:17px">工程時刻表</div><span class="muted">更新：' + esc(S.planPubAt) + '</span></div>' +
+      '<div class="seg" role="group" aria-label="顯示方式"><button data-act="pview" data-arg="grid" aria-pressed="' + (S.cPlanView !== 'list') + '">月曆</button><button data-act="pview" data-arg="list" aria-pressed="' + (S.cPlanView === 'list') + '">清單</button></div>' +
+      body;
+  }
+
+  function monthGrid(mk, plan) {
+    var y = +mk.slice(0, 4), m = +mk.slice(5);
+    var days = new Date(Date.UTC(y, m, 0)).getUTCDate();
+    var cols = [];
+    for (var d = 1; d <= days; d++) {
+      var t = Date.UTC(y, m - 1, d);
+      var dow = new Date(t).getUTCDay();
+      cols.push({ d: d, t: t, dow: dow, we: dow === 0 || dow === 6, good: GOOD_DAYS.indexOf(isoOf(t)) >= 0, today: t === TODAY });
+    }
+    var head1 = '<tr><th class="nm" scope="col">' + m + ' 月</th>' + cols.map(function (c) { return '<th scope="col" class="' + (c.good ? 'good' : c.we ? 'we' : '') + (c.today ? ' today' : '') + '">' + c.d + '</th>'; }).join('') + '</tr>';
+    var head2 = '<tr><th class="nm">星期</th>' + cols.map(function (c) { return '<th class="' + (c.we ? 'we' : '') + (c.today ? ' today' : '') + '">' + WK[c.dow] + '</th>'; }).join('') + '</tr>';
+    var rows = plan.map(function (r) {
+      var a = isoT(r.start), b = isoT(r.end);
+      var dot = '<span style="display:inline-block;width:6px;height:6px;border-radius:3px;margin-right:4px;vertical-align:1px;background:' + (r.status === 'done' ? 'var(--teal)' : r.status === 'doing' ? 'var(--amber)' : 'var(--bar-todo)') + '"></span>';
+      return '<tr><th class="nm" scope="row" title="' + esc(r.name) + '">' + dot + esc(r.name) + '</th>' + cols.map(function (c) {
+        var on = c.t >= a && c.t <= b && !(c.we && (r.type === 'work' || r.type === 'measure'));
+        return '<td class="' + (c.we ? 'we' : '') + (c.today ? ' today' : '') + '"' + (on ? ' style="background:' + PLAN_TYPES[r.type].color + '"' : '') + '></td>';
+      }).join('') + '</tr>';
+    }).join('');
+    return '<div class="cal-wrap"><table class="cal"><thead>' + head1 + head2 + '</thead><tbody>' + rows + '</tbody></table></div>';
   }
 
   function cLog() {
@@ -776,7 +931,7 @@ textarea.sm{min-height:120px;padding:12px}
   }
 
   function designerApp() {
-    var m = { edit: dEdit, confirm: dConfirm, report: dReport, albums: dAlbums, issues: dIssues, convert: dConvert };
+    var m = { edit: dEdit, confirm: dConfirm, report: dReport, albums: dAlbums, issues: dIssues, convert: dConvert, sched: dSched, plan: dPlan };
     return (m[S.dScreen] || dHome)() + toastHtml(S.dToast);
   }
 
@@ -802,6 +957,11 @@ textarea.sm{min-height:120px;padding:12px}
       '<div class="snack' + (snackOn ? ' show' : '') + (isFresh() ? ' fresh' : '') + '" role="status"><span class="grow">' + (S.snack ? esc(S.snack.text) : '') + '</span>' +
         (S.snack ? '<button data-act="view" data-arg="' + S.snack.to + '">' + (S.snack.to === 'client' ? '切到屋主端' : '切到設計師端') + '</button>' : '') + '</div>';
     app.querySelectorAll('[data-scroll]').forEach(function (el) { var k = el.getAttribute('data-scroll'); if (scrolls[k]) el.scrollTop = scrolls[k]; });
+    // 月曆表打開時，橫向捲到今天附近
+    app.querySelectorAll('.cal-wrap').forEach(function (w) {
+      var td = w.querySelector('th.today');
+      w.scrollLeft = td ? Math.max(0, td.offsetLeft - 140) : 0;
+    });
     var snackKey = S.snack ? S.snack.text : null;
     if (snackKey !== shownSnack) {
       shownSnack = snackKey;
@@ -913,8 +1073,25 @@ textarea.sm{min-height:120px;padding:12px}
       if (!title) { if (input) input.focus(); return; }
       set({ issues: [{ id: S.nextIssue, title: title, detail: '', level: S.issueLevel, status: '回報', at: '10/30', converted: false }].concat(S.issues), nextIssue: S.nextIssue + 1, issueDraft: '' });
     },
+    // 屋主版工程時刻表
+    calm: function (arg) { set({ cMonth: arg }); },
+    pview: function (arg) { set({ cPlanView: arg }); },
+    planAdd: function () { set({ plan: S.plan.concat([{ id: S.nextPlan, name: '新工種', type: 'work', start: '2026-01-05', end: '2026-01-09', status: 'todo' }]), nextPlan: S.nextPlan + 1 }); },
+    planDel: function (arg) { set({ plan: S.plan.filter(function (r) { return String(r.id) !== arg; }) }); },
+    planPub: function () {
+      if (planInvalid() || !planDirty()) return;
+      set(Object.assign({ planPub: JSON.parse(JSON.stringify(S.plan)), planPubAt: roc(TODAY) + ' ' + nowHM() }, notifyClient('工程時刻表已更新，點此查看', 'timeline', '已更新給屋主')));
+    },
     reset: function () { S = initState(); save(); render(); }
   };
+  function setPlanField(attr, value) {
+    var p = attr.split(':');
+    S.plan = S.plan.map(function (r) {
+      if (String(r.id) !== p[0]) return r;
+      var o = Object.assign({}, r); o[p[1]] = value; return o;
+    });
+    save();
+  }
 
   app.addEventListener('click', function (ev) {
     var el = ev.target.closest('[data-act]');
@@ -923,6 +1100,8 @@ textarea.sm{min-height:120px;padding:12px}
     ACT[el.getAttribute('data-act')](el.getAttribute('data-arg'));
   });
   app.addEventListener('input', function (ev) {
+    var pf = ev.target.getAttribute('data-plan');
+    if (pf && ev.target.tagName === 'INPUT' && ev.target.type === 'text') { setPlanField(pf, ev.target.value); return; }
     var k = ev.target.getAttribute('data-input');
     if (!k) return;
     S[k] = ev.target.value; save();
@@ -930,6 +1109,8 @@ textarea.sm{min-height:120px;padding:12px}
   });
   app.addEventListener('change', function (ev) {
     var t = ev.target;
+    var pf = t.getAttribute('data-plan');
+    if (pf) { setPlanField(pf, t.value); render(); return; }
     var pid = t.getAttribute('data-photo-trade');
     if (pid) { set({ photos: S.photos.map(function (p) { return String(p.id) === pid ? Object.assign({}, p, { trade: t.value }) : p; }) }); return; }
     var k = t.getAttribute('data-change');

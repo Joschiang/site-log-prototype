@@ -118,7 +118,8 @@ textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b)
 .tabbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:#fff;border-top:1px solid var(--line);padding:6px 8px 10px}
 .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:52px;border:none;background:transparent;color:var(--muted);font-size:11px}
 .tab[aria-current="page"]{color:var(--teal);font-weight:700}
-.toast{position:absolute;top:12px;left:12px;right:12px;z-index:5;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:none;border-radius:16px;background:#fff;box-shadow:0 8px 24px rgba(24,33,43,.22);text-align:left;animation:drop .3s ease-out}
+.toast{position:absolute;top:12px;left:12px;right:12px;z-index:5;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:none;border-radius:16px;background:#fff;box-shadow:0 8px 24px rgba(24,33,43,.22);text-align:left}
+.fresh{animation:drop .3s ease-out}
 .toast .ic{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:#06C755;color:#fff;flex-shrink:0}
 .toast .tx{display:flex;flex-direction:column;gap:2px}
 @keyframes drop{from{transform:translateY(-12px);opacity:0}}
@@ -141,7 +142,7 @@ textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b)
   .device{width:100%;height:100%;min-height:0;border:none;border-radius:0}
   .stage[data-view="designer"] .col-client,.stage[data-view="client"] .col-designer{display:none}
   .footer,.tabbar{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
-  .snack.show{display:flex;position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:20;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--ink);color:#fff;font-size:14px;box-shadow:0 8px 24px rgba(24,33,43,.3);animation:drop .3s ease-out}
+  .snack.show{display:flex;position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:20;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--ink);color:#fff;font-size:14px;box-shadow:0 8px 24px rgba(24,33,43,.3)}
   .snack .grow{flex:1}
   .snack button{height:40px;padding:0 14px;border:none;border-radius:10px;background:#fff;color:var(--ink);font-size:14px;font-weight:700}
 }
@@ -233,7 +234,7 @@ textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b)
   function initState() {
     return {
       view: 'designer', dScreen: 'home', cTab: 'home', draft: '', notify: true,
-      snapshot: null, reportSent: false, sentReport: '', toast: null, snack: null, clientNew: false, nextId: 5,
+      snapshot: null, reportSent: false, sentReport: '', toast: null, snack: null, clientNew: false, showDone: false, nextId: 5,
       trades: [{ id: 'w', name: '木作', n: 2 }, { id: 'm', name: '泥作', n: 1 }, { id: 'a', name: '鋁窗廠商', n: 1 }],
       entries: [
         { id: 1, text: '訂製門框安裝完成，泥作崁縫填實中', pub: false },
@@ -257,8 +258,14 @@ textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b)
   var KEY = 'site-log-proto-v1';
   var S;
   try { S = JSON.parse(localStorage.getItem(KEY)) || initState(); } catch (e) { S = initState(); }
+  S.snack = null; // 提示列只在當下出現，重整後不再跳出
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 無痕模式等情況：不存也能用 */ } }
   function set(patch) { Object.assign(S, typeof patch === 'function' ? patch(S) : patch); save(); render(); }
+
+  // 通知與提示列只在剛出現時播動畫；提示列 4 秒後自動收起
+  var freshAt = 0, snackTimer = null, shownSnack = null;
+  function markFresh() { freshAt = Date.now(); }
+  function isFresh() { return Date.now() - freshAt < 400; }
 
   // ---------- 小工具 ----------
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -351,9 +358,9 @@ textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b)
             return '<div class="entry"><div class="t">' + esc(e.text) + '</div>' +
               '<button class="vis' + (e.pub ? ' on' : '') + '" data-act="entry" data-arg="' + e.id + '" aria-pressed="' + e.pub + '">' + (e.pub ? I.eye + '客戶可見' : I.lock + '僅內部') + '</button></div>';
           }).join('') +
-          '<div class="input-row"><label for="draft" class="sr-only">新增一條工程內容</label>' +
+          '<form class="input-row" data-form="add"><label for="draft" class="sr-only">新增一條工程內容</label>' +
             '<input id="draft" class="txt" data-input="draft" value="' + esc(S.draft) + '" placeholder="新增一條工程內容…" enterkeyhint="done" autocomplete="off">' +
-            '<button class="add" data-act="add">新增</button></div>' +
+            '<button class="add" type="submit">新增</button></form>' +
         '</div>' +
         '<div class="card" style="padding:14px 16px">' +
           '<div class="between" style="margin-bottom:10px"><div class="h sm">現場照片</div><div class="muted">點照片切換 · 客戶可見 ' + pubP + ' / ' + S.photos.length + '</div></div>' +
@@ -435,7 +442,7 @@ textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b)
       '<div class="card' + (top.today ? ' hl' : '') + '">' +
         '<div class="between" style="margin-bottom:8px"><div class="h">最新動態</div><span class="muted">' + (top.today ? '<span class="chip teal" style="margin-right:6px">今天</span>' : '') + top.date + '</span></div>' +
         top.entries.slice(0, 2).map(function (t) { return '<div class="li">· ' + esc(t) + '</div>'; }).join('') +
-        '<div class="muted" style="margin-top:6px">' + top.photos.length + ' 張現場照片' + more + '</div>' +
+        (top.photos.length || more ? '<div class="muted" style="margin-top:6px">' + (top.photos.length ? top.photos.length + ' 張現場照片' + more : more.slice(1)) + '</div>' : '') +
         '<button class="btn sm line-teal" style="margin-top:10px" data-act="tab" data-arg="log">看工程日誌</button>' +
       '</div>' +
       (S.reportSent ? '<div class="card"><div class="h" style="margin-bottom:8px">本週工程匯報</div><div class="pre">' + esc(S.sentReport) + '</div></div>' : '') +
@@ -452,8 +459,9 @@ textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b)
     return '<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip lg teal">已完成 ' + COUNT.done + '</span><span class="chip lg amber">施工中 ' + COUNT.doing + '</span><span class="chip lg gray">未開始 ' + COUNT.todo + '</span></div>' +
       '<div class="card" style="padding:14px 16px">' +
         '<div class="between" style="margin-bottom:10px"><div class="h">工程進度表</div><div class="muted" style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:12px;background:var(--amber)"></span>今天</div></div>' +
+        '<button class="btn sm line" style="margin-bottom:10px" data-act="done" aria-expanded="' + !!S.showDone + '">' + (S.showDone ? '收合已完成的 ' : '顯示已完成的 ') + COUNT.done + ' 項</button>' +
         '<div class="months" aria-hidden="true">' + months + '</div>' +
-        ROWS.map(function (r) {
+        ROWS.filter(function (r) { return S.showDone || r.st !== 'done'; }).map(function (r) {
           return '<div class="tl"><div class="between" style="align-items:flex-start"><span class="name">' + r.name + '</span><span class="chip ' + ST_CHIP[r.st] + '">' + ST_LABEL[r.st] + '</span></div>' +
             '<div class="range">' + r.range + '</div>' +
             '<div class="gantt" aria-hidden="true"><i class="seg" style="left:' + r.left + '%;width:' + r.width + '%;background:' + ST_BAR[r.st] + '"></i><i class="now" style="left:' + TODAY_PCT + '%"></i></div></div>';
@@ -478,7 +486,7 @@ textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b)
     var tabs = [['home', '首頁', I.home], ['timeline', '進度', I.timeline], ['log', '日誌', I.log]].map(function (t) {
       return '<button class="tab" data-act="tab" data-arg="' + t[0] + '"' + (S.cTab === t[0] ? ' aria-current="page"' : '') + '>' + tabIcon(t[2]) + '<span>' + t[1] + '</span></button>';
     }).join('');
-    var toast = S.toast ? '<button class="toast" data-act="toast"><span class="ic">' + I.bell + '</span><span class="tx"><span class="muted">LINE · [工作室名稱]</span><span style="font-size:14px;font-weight:500">' +
+    var toast = S.toast ? '<button class="toast' + (isFresh() ? ' fresh' : '') + '" data-act="toast"><span class="ic">' + I.bell + '</span><span class="tx"><span class="muted">LINE · [工作室名稱]</span><span style="font-size:14px;font-weight:500">' +
       (S.toast === 'report' ? '本週工程匯報已送達，點此查看' : '今日工程日誌已更新，點此查看') + '</span></span></button>' : '';
     return '<div class="screen">' +
       '<div class="appbar client"><div class="eyebrow">[工作室名稱] · 工程進度</div><div class="title">示範案場</div></div>' +
@@ -508,8 +516,13 @@ textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b)
         '<section class="col col-designer" aria-label="設計師端"><div class="col-label">' + I.lock + '<span>設計師端</span><span class="sub">內部 · 手機寫日誌</span></div><div class="device">' + designerApp() + '</div></section>' +
         '<section class="col col-client" aria-label="屋主端"><div class="col-label">' + I.eye + '<span>屋主端</span><span class="sub">從 LINE 點開的網頁 App</span></div><div class="device">' + clientApp() + '</div></section>' +
       '</main>' +
-      '<div class="snack' + (S.snack && S.view === 'designer' ? ' show' : '') + '" role="status"><span class="grow">' + (S.snack ? esc(S.snack) : '') + '</span><button data-act="view" data-arg="client">切到屋主端</button></div>';
+      '<div class="snack' + (S.snack && S.view === 'designer' ? ' show' : '') + (isFresh() ? ' fresh' : '') + '" role="status"><span class="grow">' + (S.snack ? esc(S.snack) : '') + '</span><button data-act="view" data-arg="client">切到屋主端</button></div>';
     app.querySelectorAll('[data-scroll]').forEach(function (el) { var k = el.getAttribute('data-scroll'); if (scrolls[k]) el.scrollTop = scrolls[k]; });
+    if (S.snack !== shownSnack) {
+      shownSnack = S.snack;
+      clearTimeout(snackTimer);
+      if (S.snack) snackTimer = setTimeout(function () { S.snack = null; render(); }, 4000);
+    }
   }
 
   // ---------- 操作 ----------
@@ -524,13 +537,17 @@ textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b)
     entry: function (arg) { set({ entries: S.entries.map(function (e) { return String(e.id) === arg ? Object.assign({}, e, { pub: !e.pub }) : e; }) }); },
     photo: function (arg) { set({ photos: S.photos.map(function (p) { return String(p.id) === arg ? Object.assign({}, p, { pub: !p.pub }) : p; }) }); },
     add: function () {
-      var text = S.draft.trim();
-      if (!text) { var el = document.getElementById('draft'); if (el) el.focus(); return; }
-      set({ draft: '', nextId: S.nextId + 1, entries: S.entries.concat([{ id: S.nextId, text: text, pub: false }]) });
+      var input = document.getElementById('draft');
+      var text = (input ? input.value : S.draft).trim();
+      if (text) set({ draft: '', nextId: S.nextId + 1, entries: S.entries.concat([{ id: S.nextId, text: text, pub: false }]) });
+      input = document.getElementById('draft');
+      if (input) input.focus();
     },
+    done: function () { set({ showDone: !S.showDone }); },
     notify: function () { set({ notify: !S.notify }); },
     publish: function () {
       var wasPublished = !!S.snapshot;
+      markFresh();
       set({
         snapshot: currentPublic(), dScreen: 'home',
         toast: S.notify ? 'log' : null, clientNew: S.notify,
@@ -538,7 +555,7 @@ textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b)
       });
     },
     unpublish: function () { set({ snapshot: null, toast: null, clientNew: false, snack: null }); },
-    send: function () { set({ reportSent: true, sentReport: S.report, toast: 'report', clientNew: true, dScreen: 'home', snack: '週報已發送給屋主' }); },
+    send: function () { markFresh(); set({ reportSent: true, sentReport: S.report, toast: 'report', clientNew: true, dScreen: 'home', snack: '週報已發送給屋主' }); },
     toast: function () { set({ cTab: S.toast === 'report' ? 'home' : 'log', toast: null, clientNew: false }); },
     reset: function () { S = initState(); save(); render(); }
   };
@@ -552,8 +569,9 @@ textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b)
     var k = ev.target.getAttribute('data-input');
     if (k) { S[k] = ev.target.value; save(); }
   });
-  app.addEventListener('keydown', function (ev) {
-    if (ev.key === 'Enter' && ev.target.id === 'draft' && !ev.isComposing) { ev.preventDefault(); ACT.add(); var el = document.getElementById('draft'); if (el) el.focus(); }
+  // 新增內容用表單送出：按「新增」或鍵盤 Enter／完成 都會觸發；中文輸入法選字時的 Enter 不會誤送
+  app.addEventListener('submit', function (ev) {
+    if (ev.target.getAttribute('data-form') === 'add') { ev.preventDefault(); ACT.add(); }
   });
 
   render();

@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#0F6E6E">
+<title>報價單系統 · 試用原型</title>
+<meta property="og:title" content="報價單系統 · 試用原型">
+<meta property="og:description" content="廠商報價進價格庫、編輯報價單即時看毛利、版本比較、輸出屋主版報價單。範例：示範案場（數字為示範用）">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Noto Sans TC',system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif;color:#18212B;background:#EEF1F4;-webkit-text-size-adjust:100%}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid #0F6E6E;outline-offset:2px}
+a{color:#0F6E6E}a:hover{color:#0A5050}
+.wrap{max-width:1360px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:16px}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
+.top h1{font-size:22px;margin:0}
+.top p{margin:4px 0 0;font-size:13px;color:#5B6673;line-height:1.6}
+.top .r{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.vchip{font-size:13px;padding:6px 12px;border-radius:999px;background:#DDF0EE;color:#0A5050;font-weight:500}
+.btn{height:44px;padding:0 18px;border:1px solid #C9D0D7;border-radius:12px;background:#fff;font-size:14px}
+.btn-p{height:48px;border:none;border-radius:12px;background:#0F6E6E;color:#fff;font-size:15px;font-weight:700}
+.btn-o{height:44px;border:1px solid #0F6E6E;border-radius:12px;background:#fff;color:#0A5050;font-size:14px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid #D6DCE2;padding-bottom:8px}
+.toast{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#18212B;color:#fff;border-radius:12px;padding:12px 16px;font-size:14px}
+.toast button{min-width:44px;height:36px;border:none;background:transparent;color:#fff;font-size:13px}
+.card{background:#fff;border:1px solid #E1E5EA;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.col{display:flex;flex-direction:column;gap:14px}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.h{font-size:16px;font-weight:700}
+.muted{font-size:12px;color:#5B6673}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl{font-size:13px}
+.tbl .head{color:#5B6673;font-weight:500;border-bottom:1px solid #E1E5EA}
+.tbl .head.fill{background:#F5F7F9}
+.tbl .row{border-bottom:1px solid #EEF1F4;align-items:center}
+.tbl .cell{padding:8px 10px}
+.tbl .num{text-align:right}
+.g-imp{display:grid;grid-template-columns:minmax(180px,1.2fr) minmax(280px,2.2fr) 130px minmax(200px,1.4fr)}
+.g-cat{display:grid;grid-template-columns:minmax(260px,2.2fr) 48px 100px minmax(220px,2fr) 100px 90px 90px}
+.g-line{display:grid;grid-template-columns:minmax(250px,2.4fr) 52px 80px 96px 108px 96px 136px 176px}
+.g-cmp{display:grid;grid-template-columns:120px minmax(240px,2fr) minmax(200px,1.6fr) 100px 100px 100px}
+.cat-h{padding:10px 10px 6px;background:#F5F7F9;font-weight:700;border-bottom:1px solid #E1E5EA}
+.warn-box{background:#fff;border:2px solid #B45309;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.banner{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;background:#FCEBD9;color:#8A3F06;border-radius:12px;padding:12px 16px;font-size:14px}
+.banner button{height:40px;padding:0 14px;border:1px solid #8A3F06;border-radius:10px;background:#fff;color:#8A3F06;font-size:13px}
+.layout{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.main{flex:999 1 720px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.side{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.sec-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.sec-h .l{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.sec-h .ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:13px;color:#3D4752}
+.sec-h label{display:flex;align-items:center;gap:6px}
+.in{height:32px;border:1px solid #C9D0D7;border-radius:8px;padding:0 6px;text-align:right;font-size:13px;background:#fff}
+.in.s{width:48px}.in.q{width:64px}
+.btn-red{height:36px;padding:0 12px;border:1px solid #B42318;border-radius:10px;background:#FDECEA;color:#8F1B12;font-size:13px}
+.tag{font-size:11px;padding:1px 6px;border-radius:6px}
+.btn-sm{display:block;margin-top:4px;height:30px;padding:0 8px;border:1px solid #C9D0D7;border-radius:8px;background:#fff;font-size:12px}
+.btn-pick{height:32px;padding:0 10px;border:1px solid #0F6E6E;border-radius:8px;background:#fff;color:#0A5050;font-size:12px}
+.picked{font-size:12px;padding:4px 10px;border-radius:999px;background:#0F6E6E;color:#fff;white-space:nowrap}
+select.st{height:32px;max-width:160px;border:1px solid #C9D0D7;border-radius:8px;background:#fff;font-size:12px;padding:0 6px}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:13px}
+.kv span:first-child{color:#3D4752}
+.kv.b{font-weight:700}.kv.b span:first-child{color:#18212B}
+.kv.big{font-size:16px;font-weight:700;color:#0A5050}.kv.big span:first-child{color:#0A5050}
+.sep{height:1px;background:#EEF1F4;margin:4px 0}
+.flagrow{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:8px;font-size:13px}
+.pay{border-top:1px solid #EEF1F4;padding-top:8px;font-size:13px}
+.pills{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.pills .lbl{font-size:14px;font-weight:700;width:32px}
+.stat{background:#fff;border:1px solid #E1E5EA;border-radius:16px;padding:16px}
+.stat .v{font-size:22px;font-weight:700;margin-top:4px}
+.paper-note{width:100%;max-width:860px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;background:#DDF0EE;color:#0A5050;border-radius:12px;padding:10px 16px;font-size:13px}
+.paper{width:100%;max-width:860px;overflow-x:auto;background:#fff;border:1px solid #D6DCE2;border-radius:4px}
+.paper-in{min-width:680px;padding:40px 32px;display:flex;flex-direction:column;gap:20px;font-size:13px;line-height:1.5}
+.ph{font-weight:700;font-size:15px;border-bottom:2px solid #18212B;padding-bottom:4px}
+.ph2{font-weight:700;font-size:14px;border-bottom:1px solid #18212B;padding-bottom:4px}
+.g-psum{display:grid;grid-template-columns:56px 1fr 60px 120px;border-bottom:1px solid #EEF1F4}
+.g-ppass{display:grid;grid-template-columns:56px 1fr 60px 160px;border-bottom:1px solid #EEF1F4}
+.g-pdet{display:grid;grid-template-columns:32px 1fr 40px 48px 64px 80px 160px}
+.pc{padding:5px 4px}
+.tot-r{display:flex;justify-content:flex-end;gap:24px;padding:5px 4px}
+.tot-r span:last-child{width:120px;text-align:right}
+.boxed{width:320px;max-width:100%;display:flex;flex-direction:column;gap:4px;border:1px solid #18212B;padding:10px 14px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 24px}
+@media (max-width:640px){.two{grid-template-columns:1fr}.top h1{font-size:19px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+class DCLogic { constructor(p) { this.props = p || {}; } setState() {} }
+const SECS = [
+  { id: 's1', no: '壹', name: '假設工程', grp: 'reno', mk: 25, tg: 20 },
+  { id: 's6', no: '陸', name: '木作工程', grp: 'reno', mk: 30, tg: 20 },
+  { id: 's7', no: '柒', name: '油漆工程', grp: 'reno', mk: 30, tg: 20 },
+  { id: 's10', no: '拾', name: '石材工程', grp: 'reno', mk: 25, tg: 20 },
+  { id: 's11', no: '拾壹', name: '木地板工程', grp: 'reno', mk: 15, tg: 10 },
+  { id: 'px', no: '二', name: '設備材料及配合工程', grp: 'pass', mk: 20, tg: 15 }
+];
+const SEC = {};
+SECS.forEach(function (s) { SEC[s.id] = s; });
+
+const GRP = { g1: '電視櫃 二選一', g2: '玄關櫃 二選一', g3: '廚房檯面 二選一', g4: '主臥疊櫃 二選一', g5: '新風 二選一' };
+const VEN = { paint: '油漆廠商', wood: '木工班', floor: '木地板廠商', win: '鋁門窗廠商' };
+
+// q/p = v2（2025/08/24 送屋主版）的數量與售價；cost = 已核對的未稅成本；pend = 待核對的木工班報價
+const L = [
+  { id: 'a1', sec: 's1', name: '電梯保護', unit: '間', q: 1, p: 10000, pend: 8000, ven: 'wood', raw: '1 式 × 8,000' },
+  { id: 'a2', sec: 's1', name: '梯廳保護 地面＋壁面 F1夾板＋角材固定', unit: '式', q: 1, p: 22500, pend: 11400, ven: 'wood', raw: '60 尺 × 190 = 11,400', chk: '尺 → 式 換算' },
+  { id: 'a3', sec: 's1', name: '臨時大門施作', unit: '樘', q: 1, p: 7500, pend: 500, ven: 'wood', raw: '1 式 × 500' },
+  { id: 'a4', sec: 's1', name: '施工期間粗清垃圾運棄及清潔打掃', unit: '式', q: 5, p: 12000 },
+  { id: 'a5', sec: 's1', name: '完工後細清', unit: '式', q: 1, p: 30000 },
+
+  { id: 'w1', sec: 's6', name: '全室-平釘天花板 #矽酸鈣板（前後陽台除外）', unit: '坪', q: 26.5, p: 4400, pend: 3500, ven: 'wood', raw: '26.5 坪 × 3,500' },
+  { id: 'w2', sec: 's6', name: '女兒房-斜面造型天花板 #矽酸鈣板', unit: '坪', q: 2.6, p: 5000, pend: 3800, ven: 'wood', raw: '2.6 坪 × 3,800' },
+  { id: 'w3', sec: 's6', name: '全室-天花板垂板及高低天花立板', unit: '尺', q: 73, p: 500, pend: 210, ven: 'wood', raw: '73 尺 × 210' },
+  { id: 'w4', sec: 's6', name: '全室-木作窗簾盒 #矽酸鈣板', unit: '尺', q: 54.5, p: 500, pend: 375, ven: 'wood', raw: '54.5 尺 × 375' },
+  { id: 'w5', sec: 's6', name: '全室-間接照明', unit: '尺', q: 91.5, p: 500, pend: 250, ven: 'wood', raw: '91.5 尺 × 250' },
+  { id: 'w6', sec: 's6', name: '全室-天花板維修孔下掀開門', unit: '組', q: 5, p: 4800, pend: 6500, ven: 'wood', raw: '5 組 × 6,500' },
+  { id: 'w7', sec: 's6', name: '玄關-隔間牆面貼木皮', unit: '尺', q: 7, p: 2300, pend: 4600, ven: 'wood', raw: '7 尺 × 4,600', note: '玻璃磚左右兩側' },
+  { id: 'w8', sec: 's6', name: '後陽台及廁所-牆面單面封牆 #萬用底板', unit: '尺', q: 6.5, p: 2000, pend: 8000, ven: 'wood', raw: '6.5 處 × 8,000', chk: '單位不一致：廠商寫「處」、報價單是「尺」' },
+  { id: 'w9', sec: 's6', name: '玄關-木作收納櫃含兩抽 132×55×207 含造型ㄇ框', unit: '組', q: 1, p: 51300, pend: 33000, ven: 'wood', raw: '4.4 尺 × 7,500 = 33,000', chk: '尺 → 組 換算' },
+  { id: 'w10', sec: 's6', name: '餐廳-中島櫃面貼PP板含抽屜及抽盤 210×86×98.8', unit: '組', q: 1, p: 65700, pend: 79100, ven: 'wood', raw: '7.0 尺 × 11,300 = 79,100', chk: '尺 → 組 換算' },
+  { id: 'w11', sec: 's6', name: '書房-木作收納櫃面貼PP膚感灰白 236×59×204', unit: '組', q: 1, p: 88500, pend: 59000, ven: 'wood', raw: '7.9 尺 × 7,500 = 59,000', chk: '尺 → 組 換算' },
+  { id: 'w12', sec: 's6', name: '主臥-木作橫拉衣櫃門框面貼PP板 240×65×202', unit: '組', q: 1, p: 90000, pend: 64000, ven: 'wood', raw: '8.0 尺 × 8,000 = 64,000', chk: '尺 → 組 換算' },
+  { id: 'w13', sec: 's6', name: '女兒房-木作衣櫃門框面貼PP板 160×60×204', unit: '組', q: 2, p: 56700, pend: 20000, ven: 'wood', raw: '2 組共 40,000', chk: '2 組合計 → 每組' },
+  { id: 'w14', sec: 's6', name: '客廳-沙發背後訂製矮櫃 240×50×90', unit: '組', q: 1, p: 56000, st: 'buy' },
+  { id: 'w15', sec: 's6', name: '主臥-木作衣櫃疊櫃面貼PP板 178.5×65×202', unit: '組', q: 1, p: 33000, grp: 'g4', sel: false },
+  { id: 'w16', sec: 's6', name: '主臥-衣櫃位置改木作封版', unit: '組', q: 1, p: 12000, grp: 'g4', sel: true, pend: 1680, ven: 'wood', raw: '8.0 尺 × 210 = 1,680', chk: '尺 → 組 換算' },
+
+  { id: 'p1', sec: 's7', name: '天花板及包樑表面批土打磨噴漆處理', unit: '坪', q: 29.1, p: 2600, cost: 1600, ven: 'paint', raw: '29.1 坪 × 1,600', note: '得利' },
+  { id: 'p2', sec: 's7', name: '牆壁油漆批土打磨噴漆處理', unit: '坪', q: 88, p: 4000, cost: 3500, ven: 'paint', raw: '88 坪 × 3,500（帶料）', note: '班傑明' },
+  { id: 'p3', sec: 's7', name: '西側外牆面-隔熱漆施作', unit: '式', q: 1, p: 28500 },
+  { id: 'p4', sec: 's7', name: '全室木皮打磨上保護漆處理', unit: '尺', q: 83, p: 1700, cost: 1200, ven: 'paint', raw: '83 尺 × 1,200' },
+  { id: 'p5', sec: 's7', name: '全室木皮門片打磨上保護漆處理', unit: '樘', q: 7, p: 12000, cost: 8000, ven: 'paint', raw: '8 樘 × 8,000' },
+
+  { id: 't1', sec: 's10', name: '電視櫃立面及平台貼賽麗石', unit: '組', q: 1, p: 46600, grp: 'g1', sel: false, note: 'CS641 Motion Grey' },
+  { id: 't2', sec: 's10', name: '電視櫃立面及平台貼LG人造石', unit: '組', q: 1, p: 24000, grp: 'g1', sel: true, note: '款式另選' },
+  { id: 't3', sec: 's10', name: '中島檯面貼帝通石', unit: '組', q: 1, p: 72300, note: 'DT225 蚵灰石' },
+  { id: 't4', sec: 's10', name: '玄關收納櫃立面及檯面貼帝通石', unit: '組', q: 1, p: 64500, grp: 'g2', sel: false, note: 'DT225 蚵灰石' },
+  { id: 't5', sec: 's10', name: '玄關收納櫃立面及檯面貼賽麗石', unit: '組', q: 1, p: 41100, grp: 'g2', sel: true, note: 'CS641 Motion Grey' },
+  { id: 't6', sec: 's10', name: '廚房檯面貼帝通石', unit: '組', q: 1, p: 62800, grp: 'g3', sel: false, note: 'DT225 蚵灰石' },
+  { id: 't7', sec: 's10', name: '廚房檯面貼賽麗石', unit: '組', q: 1, p: 39980, grp: 'g3', sel: true, note: 'CS641 Motion Grey' },
+  { id: 't8', sec: 's10', name: '主浴檯面及正面貼賽麗石', unit: '組', q: 1, p: 23900, note: 'CS503 Blanco Zeus-Extra' },
+
+  { id: 'f1', sec: 's11', name: '全室-海島型實木訂製橡木木地板 300條（含損料）', unit: '坪', q: 24, p: 11550, cost: 9905, ven: 'floor', raw: '含稅 10,400 ÷ 1.05（廠商建議售價 11,800）' },
+  { id: 'f2', sec: 's11', name: '上項工資及12mm底板＋防潮布＋矽利康', unit: '坪', q: 26, p: 3700, cost: 3238, ven: 'floor', raw: '含稅 3,400 ÷ 1.05（廠商建議售價 3,700）' },
+  { id: 'f3', sec: 's11', name: '前／後陽台環塑木地板', unit: '式', q: 1, p: 50000 },
+
+  { id: 'x1', sec: 'px', name: 'YKK氣密窗工程', unit: '式', q: 1, p: 529720, cost: 353333, ven: 'win', raw: '含稅優惠價 371,000 ÷ 1.05（原價 436,814）' },
+  { id: 'x2', sec: 'px', name: '冷氣工程（大金吊隱 5 台含安裝）', unit: '式', q: 1, p: 437750 },
+  { id: 'x3', sec: 'px', name: '德國 二合一新風交換機工程（新風＋除濕）', unit: '式', q: 1, p: 350000, grp: 'g5', sel: true, st: 'est' },
+  { id: 'x4', sec: 'px', name: '大金 新風系統（全熱交換機）／除濕系統', unit: '式', q: 1, p: 200000, grp: 'g5', sel: false, st: 'est', note: '現場狀況施作較困難' },
+  { id: 'x5', sec: 'px', name: '全屋淨水工程', unit: '式', q: 1, p: 300000, st: 'est' },
+  { id: 'x6', sec: 'px', name: '室內裝修許可證明', unit: '式', q: 1, p: 85000 }
+];
+
+// v1 = 從 v2 備註回推的初版
+const V1 = { t1: { sel: true }, t2: { sel: false }, t4: { sel: true }, t5: { sel: false }, t6: { sel: true }, t7: { sel: false }, w15: { sel: true }, w16: { sel: false }, w14: { st: 'bill' } };
+
+function num(v) { const n = parseFloat(String(v).replace(/,/g, '')); return isFinite(n) ? n : 0; }
+function fmt(n) { return Math.round(n).toLocaleString('en-US'); }
+function signed(n) { const r = Math.round(n); if (r === 0) return '0'; return (r > 0 ? '+' : '−') + Math.abs(r).toLocaleString('en-US'); }
+function snap(which) {
+  const s = {};
+  L.forEach(function (l) {
+    const o = { q: String(l.q), p: String(l.p), st: l.st || 'bill', sel: !!l.sel };
+    if (which === 'v1' && V1[l.id]) Object.assign(o, V1[l.id]);
+    s[l.id] = o;
+  });
+  return s;
+}
+function norm(s) { return JSON.stringify(L.map(function (l) { const x = s[l.id]; return [num(x.q), num(x.p), x.st, !!x.sel]; })); }
+
+const CHIP = 'font-size: 12px; padding: 3px 8px; border-radius: 999px; white-space: nowrap; ';
+const TAB_ON = 'height: 44px; padding: 0 18px; border: none; border-radius: 12px; background: #18212B; color: #FFFFFF; font-size: 14px; font-weight: 700; cursor: pointer';
+const TAB_OFF = 'height: 44px; padding: 0 18px; border: 1px solid #C9D0D7; border-radius: 12px; background: #FFFFFF; color: #18212B; font-size: 14px; cursor: pointer';
+const ROW = 'display: grid; grid-template-columns: minmax(250px, 2.4fr) 52px 80px 96px 108px 96px 136px 176px; border-bottom: 1px solid #EEF1F4; align-items: center; ';
+const PROW = 'display: grid; grid-template-columns: 32px 1fr 40px 48px 64px 80px 160px; border-bottom: 1px solid #EEF1F4; ';
+const PIN = 'width: 92px; height: 32px; box-sizing: border-box; border-radius: 8px; padding: 0 6px; text-align: right; font-size: 13px; ';
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = this.fresh();
+  }
+
+  fresh() {
+    const mk = {}, tg = {};
+    SECS.forEach(function (s) { mk[s.id] = String(s.mk); tg[s.id] = String(s.tg); });
+    return {
+      tab: 'lib', d: snap('v2'), mk: mk, tg: tg, imp: false, toast: '', a: 'v1', b: 'v2',
+      vers: [
+        { id: 'v1', label: 'v1 初版', date: '依 v2 備註回推', snap: snap('v1') },
+        { id: 'v2', label: 'v2 已送屋主', date: '2025/08/24', snap: snap('v2') }
+      ]
+    };
+  }
+
+  cost(l) {
+    if (l.cost != null) return l.cost;
+    if (this.state.imp && l.pend != null) return l.pend;
+    return null;
+  }
+  cnt(l, x) { return x.st === 'bill' && (!l.grp || x.sel); }
+  margin(l, x) {
+    const c = this.cost(l), p = num(x.p);
+    if (c == null || p <= 0) return null;
+    return (p - c) / p * 100;
+  }
+  flag(l, x) {
+    const c = this.cost(l);
+    if (c == null) return 'miss';
+    const p = num(x.p);
+    if (p < c) return 'neg';
+    if (this.margin(l, x) < num(this.state.tg[l.sec])) return 'low';
+    return 'ok';
+  }
+  sugg(l) {
+    const c = this.cost(l);
+    if (c == null) return null;
+    return Math.ceil(c * (1 + num(this.state.mk[l.sec]) / 100) / 10) * 10;
+  }
+  tot(s) {
+    const t = { r: 0, ps: 0, cs: 0, rv: 0, miss: 0, missAmt: 0, neg: 0, low: 0 };
+    L.forEach((l) => {
+      const x = s[l.id];
+      if (!this.cnt(l, x)) return;
+      const a = num(x.q) * num(x.p);
+      if (SEC[l.sec].grp === 'reno') t.r += a; else t.ps += a;
+      const c = this.cost(l);
+      if (c == null) { t.miss++; t.missAmt += a; return; }
+      t.cs += c * num(x.q); t.rv += a;
+      const f = this.flag(l, x);
+      if (f === 'neg') t.neg++; else if (f === 'low') t.low++;
+    });
+    t.rm = Math.round(t.r * 0.1); t.pm = Math.round(t.ps * 0.1);
+    t.rt = t.r + t.rm; t.pt = t.ps + t.pm; t.ct = t.rt + t.pt;
+    t.tax = Math.round(t.ct * 0.05);
+    return t;
+  }
+  snapOf(id) {
+    if (id === 'draft') return this.state.d;
+    const v = this.state.vers.find(function (o) { return o.id === id; });
+    return v ? v.snap : this.state.d;
+  }
+  labelOf(id) {
+    if (id === 'draft') return '目前草稿';
+    const v = this.state.vers.find(function (o) { return o.id === id; });
+    return v ? v.label : '';
+  }
+  dirty() {
+    const last = this.state.vers[this.state.vers.length - 1];
+    return norm(this.state.d) !== norm(last.snap);
+  }
+
+  setLine(id, k, v) {
+    this.setState(function (s) {
+      const d = Object.assign({}, s.d);
+      d[id] = Object.assign({}, d[id]);
+      d[id][k] = v;
+      return { d: d };
+    });
+  }
+  pick(l) {
+    this.setState(function (s) {
+      const d = Object.assign({}, s.d);
+      L.filter(function (o) { return o.grp === l.grp; }).forEach(function (o) {
+        d[o.id] = Object.assign({}, d[o.id], { sel: o.id === l.id });
+      });
+      return { d: d };
+    });
+  }
+  fixSec(secId) {
+    const d = Object.assign({}, this.state.d);
+    L.forEach((l) => {
+      if (l.sec !== secId) return;
+      const x = d[l.id];
+      const f = this.flag(l, x);
+      if (this.cnt(l, x) && (f === 'neg' || f === 'low')) d[l.id] = Object.assign({}, x, { p: String(this.sugg(l)) });
+    });
+    this.setState({ d: d });
+  }
+  save() {
+    const s = this.state;
+    const last = s.vers[s.vers.length - 1];
+    if (!this.dirty()) { this.setState({ toast: '草稿跟 ' + last.label + ' 一樣，沒有要另存的變更。' }); return; }
+    const n = s.vers.length + 1;
+    const v = { id: 'v' + n, label: 'v' + n, date: '剛剛', snap: JSON.parse(JSON.stringify(s.d)) };
+    this.setState({ vers: s.vers.concat([v]), a: last.id, b: v.id, tab: 'cmp', toast: '已存成 v' + n + '，下面是跟 ' + last.label + ' 的差異。' });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const dirty = this.dirty();
+    const last = s.vers[s.vers.length - 1];
+    const nextLabel = 'v' + (s.vers.length + 1);
+    const go = (tab) => () => this.setState({ tab: tab });
+
+    const tabs = [['lib', '價格庫'], ['edit', '報價單編輯'], ['cmp', '版本比較'], ['pdf', '屋主視角 PDF']].map(function (t) {
+      return { label: t[1], go: go(t[0]), style: s.tab === t[0] ? TAB_ON : TAB_OFF };
+    });
+
+    // ---------- 價格庫 ----------
+    const vendors = [
+      { name: '油漆廠商', trade: '油漆', date: '2025/10/31', tax: '未稅（另加 5%）', n: 5, ok: true },
+      { name: '木工班（蓋抓報價）', trade: '木作＋假設工程', date: '未註明', tax: '未註明，視為未稅', n: 17, ok: s.imp },
+      { name: '木地板廠商', trade: '木地板', date: '2025/07/29', tax: '含稅 → ÷1.05', n: 2, ok: true },
+      { name: '鋁門窗廠商（YKK）', trade: '氣密窗', date: '2025/10/21', tax: '含稅優惠價 → ÷1.05', n: 1, ok: true }
+    ].map(function (v) {
+      return Object.assign(v, {
+        status: v.ok ? '已核對' : '待核對',
+        chipStyle: CHIP + (v.ok ? 'background: #DDF0EE; color: #0A5050' : 'background: #FCEBD9; color: #8A3F06')
+      });
+    });
+
+    const impRows = L.filter(function (l) { return l.pend != null; }).map(function (l) {
+      return {
+        raw: l.raw,
+        target: SEC[l.sec].no + ' ' + SEC[l.sec].name + ' · ' + l.name,
+        costTxt: fmt(l.pend) + ' / ' + l.unit,
+        chk: l.chk || '對應正確',
+        chkStyle: CHIP + (l.chk ? 'background: #FCEBD9; color: #8A3F06' : 'background: #EEF1F4; color: #3D4752')
+      };
+    });
+
+    const cats = SECS.map((sec) => ({
+      title: sec.no + ' ' + sec.name + '（預設加成 ' + s.mk[sec.id] + '%）',
+      rows: L.filter(function (l) { return l.sec === sec.id; }).map((l) => {
+        const c = this.cost(l);
+        const sg = this.sugg(l);
+        const pending = c == null && l.pend != null;
+        return {
+          name: l.name, unit: l.unit,
+          ven: l.ven ? VEN[l.ven] : '—',
+          raw: l.raw || '尚無廠商報價，要詢價',
+          costTxt: c != null ? fmt(c) : (pending ? '待核對' : '缺成本'),
+          costStyle: c != null ? '' : CHIP + (pending ? 'background: #FCEBD9; color: #8A3F06' : 'border: 1px dashed #5B6673; color: #3D4752'),
+          last: fmt(l.p),
+          sugg: sg != null ? fmt(sg) : '—'
+        };
+      })
+    }));
+
+    // ---------- 編輯 ----------
+    const secs = SECS.map((sec) => {
+      let sub = 0, rv = 0, cs = 0, fixN = 0;
+      const lines = L.filter(function (l) { return l.sec === sec.id; }).map((l) => {
+        const x = s.d[l.id];
+        const counted = this.cnt(l, x);
+        const c = this.cost(l);
+        const f = this.flag(l, x);
+        const m = this.margin(l, x);
+        const sg = this.sugg(l);
+        const amt = num(x.q) * num(x.p);
+        if (counted) {
+          sub += amt;
+          if (c != null) { rv += amt; cs += c * num(x.q); }
+          if (f === 'neg' || f === 'low') fixN++;
+        }
+        const pending = c == null && l.pend != null;
+        let mTxt = '—', mStyle = 'font-size: 12px; color: #5B6673';
+        if (f === 'neg') { mTxt = '低於成本 每' + l.unit + ' ' + signed(num(x.p) - c); mStyle = CHIP + 'background: #B42318; color: #FFFFFF; font-weight: 700'; }
+        else if (f === 'low') { mTxt = '毛利低 ' + m.toFixed(0) + '%'; mStyle = CHIP + 'background: #FCEBD9; color: #8A3F06; font-weight: 700'; }
+        else if (f === 'ok') { mTxt = '毛利 ' + m.toFixed(0) + '%'; mStyle = 'font-size: 12px; color: #0A5050; font-weight: 500'; }
+        let pBorder = 'border: 1px solid #C9D0D7; background: #FFFFFF; color: #18212B';
+        if (counted && f === 'neg') pBorder = 'border: 2px solid #B42318; background: #FDECEA; color: #8F1B12; font-weight: 700';
+        else if (counted && f === 'low') pBorder = 'border: 2px solid #B45309; background: #FCEBD9; color: #8A3F06';
+        let tr = ROW;
+        if (!counted) tr += 'background: #F7F8FA; color: #5B6673';
+        else if (f === 'neg') tr += 'background: #FFF6F5';
+        return {
+          name: l.name, unit: l.unit, note: l.note || '', hasNote: !!l.note,
+          hasWarn: c != null && !!l.chk && l.chk.indexOf('不一致') >= 0, warn: l.chk || '',
+          isGrp: !!l.grp, notGrp: !l.grp, grpLabel: l.grp ? GRP[l.grp] : '',
+          sel: !!x.sel, notSel: !x.sel, isEst: x.st === 'est', st: x.st,
+          q: x.q, p: x.p,
+          qLabel: l.name + ' 數量', pLabel: l.name + ' 售價', stLabel: l.name + ' 計價方式',
+          onQ: (e) => this.setLine(l.id, 'q', e.target.value),
+          onP: (e) => this.setLine(l.id, 'p', e.target.value),
+          onSt: (e) => this.setLine(l.id, 'st', e.target.value),
+          pick: () => this.pick(l),
+          costTxt: c != null ? fmt(c) : (pending ? '待核對' : '缺成本'),
+          costStyle: c != null ? '' : CHIP + (pending ? 'background: #FCEBD9; color: #8A3F06' : 'border: 1px dashed #5B6673; color: #3D4752'),
+          amtTxt: counted ? fmt(amt) : '不計價',
+          mTxt: mTxt, mStyle: mStyle,
+          pStyle: PIN + pBorder,
+          trStyle: tr,
+          canFix: counted && (f === 'neg' || f === 'low') && sg != null,
+          suggTxt: sg != null ? fmt(sg) : '',
+          fix: () => this.setLine(l.id, 'p', String(sg))
+        };
+      });
+      const sm = rv > 0 ? ((rv - cs) / rv * 100).toFixed(0) + '%' : '—';
+      return {
+        no: sec.no, name: sec.name, grpLabel: sec.grp === 'reno' ? '裝修工程' : '代付款項',
+        subTxt: fmt(sub), marginTxt: '有成本品項毛利 ' + sm,
+        mk: s.mk[sec.id], tg: s.tg[sec.id],
+        onMk: (e) => { const mk = Object.assign({}, this.state.mk); mk[sec.id] = e.target.value; this.setState({ mk: mk }); },
+        onTg: (e) => { const tg = Object.assign({}, this.state.tg); tg[sec.id] = e.target.value; this.setState({ tg: tg }); },
+        hasFix: fixN > 0, fixTxt: fixN + ' 項紅／橘一鍵套建議價',
+        fixAll: () => this.fixSec(sec.id),
+        lines: lines
+      };
+    });
+
+    const t = this.tot(s.d);
+    const sum = {
+      r: fmt(t.r), rm: fmt(t.rm), rt: fmt(t.rt), ps: fmt(t.ps), pm: fmt(t.pm), pt: fmt(t.pt),
+      ct: fmt(t.ct), tax: fmt(t.tax), ctx: fmt(t.ct + t.tax),
+      rv: fmt(t.rv), cs: fmt(t.cs),
+      gp: fmt(t.rv - t.cs) + (t.rv > 0 ? '（' + ((t.rv - t.cs) / t.rv * 100).toFixed(1) + '%）' : ''),
+      mg: fmt(t.rm + t.pm),
+      neg: t.neg, low: t.low, miss: t.miss, missAmt: fmt(t.missAmt)
+    };
+
+    const pays = [
+      { n: '第一期', pct: 35, when: '工程進場前（訂金）', link: '簽約即請款' },
+      { n: '第二期', pct: 30, when: '泥作工程完成或木工進場', link: '綁進度表：泥作工程「完成」／木作工程「開始」' },
+      { n: '第三期', pct: 30, when: '木作工程完工或油漆進場', link: '綁進度表：木作工程「完成」／油漆工程「開始」' },
+      { n: '第四期', pct: 5, when: '完工', link: '綁進度表：交屋' }
+    ];
+    let paid = 0;
+    pays.forEach(function (p, i) {
+      const a = i === pays.length - 1 ? t.ct - paid : Math.round(t.ct * p.pct / 100);
+      paid += a;
+      p.amt = fmt(a);
+    });
+
+    // ---------- 版本比較 ----------
+    const ids = s.vers.map(function (v) { return v.id; }).concat(dirty ? ['draft'] : []);
+    const pill = (on) => on
+      ? 'height: 40px; padding: 0 14px; border: none; border-radius: 10px; background: #0F6E6E; color: #FFFFFF; font-size: 13px; font-weight: 700; cursor: pointer'
+      : 'height: 40px; padding: 0 14px; border: 1px solid #C9D0D7; border-radius: 10px; background: #FFFFFF; color: #18212B; font-size: 13px; cursor: pointer';
+    const optsA = ids.map((id) => ({ label: id === 'draft' ? nextLabel + ' 草稿' : this.labelOf(id), style: pill(s.a === id), go: () => this.setState({ a: id }) }));
+    const optsB = ids.map((id) => ({ label: id === 'draft' ? nextLabel + ' 草稿' : this.labelOf(id), style: pill(s.b === id), go: () => this.setState({ b: id }) }));
+    const A = this.snapOf(s.a), B = this.snapOf(s.b);
+    const tA = this.tot(A), tB = this.tot(B);
+    const rows = [];
+    L.forEach((l) => {
+      const xa = A[l.id], xb = B[l.id];
+      const ca = this.cnt(l, xa), cb = this.cnt(l, xb);
+      const aa = ca ? num(xa.q) * num(xa.p) : 0, ab = cb ? num(xb.q) * num(xb.p) : 0;
+      let kind = '', before = '', after = '';
+      if (ca && !cb) {
+        kind = l.grp ? '改選其他方案' : (xb.st === 'buy' ? '改為建議購買成品' : (xb.st === 'est' ? '改為預估未計價' : '取消'));
+        before = fmt(aa); after = '不計價';
+      } else if (!ca && cb) {
+        kind = l.grp ? '改選這個方案' : '改為計價';
+        before = '不計價'; after = fmt(ab);
+      } else if (ca && cb) {
+        const parts = [];
+        if (num(xa.q) !== num(xb.q)) parts.push('數量 ' + num(xa.q) + ' → ' + num(xb.q));
+        if (num(xa.p) !== num(xb.p)) parts.push('單價 ' + fmt(num(xa.p)) + ' → ' + fmt(num(xb.p)));
+        if (!parts.length) return;
+        kind = parts.join('・'); before = fmt(aa); after = fmt(ab);
+      } else return;
+      const dlt = ab - aa;
+      rows.push({
+        sec: SEC[l.sec].no + ' ' + SEC[l.sec].name, name: l.name, kind: kind, before: before, after: after,
+        delta: signed(dlt),
+        dStyle: 'font-weight: 700; color: ' + (dlt > 0 ? '#0A5050' : (dlt < 0 ? '#8F1B12' : '#3D4752'))
+      });
+    });
+    const dTot = tB.ct - tA.ct;
+    const cmp = {
+      aLabel: s.a === 'draft' ? nextLabel + ' 草稿' : this.labelOf(s.a),
+      bLabel: s.b === 'draft' ? nextLabel + ' 草稿' : this.labelOf(s.b),
+      aTot: fmt(tA.ct), bTot: fmt(tB.ct), delta: signed(dTot), n: rows.length,
+      deltaStyle: 'font-size: 22px; font-weight: 700; margin-top: 4px; color: ' + (dTot > 0 ? '#0A5050' : (dTot < 0 ? '#8F1B12' : '#18212B')),
+      rows: rows, has: rows.length > 0, none: rows.length === 0
+    };
+    const verList = s.vers.map((v) => ({ label: v.label, date: v.date, tot: '合約總額 ' + fmt(this.tot(v.snap).ct) }));
+
+    // ---------- 屋主 PDF ----------
+    const remark = (l, x) => {
+      const bits = [];
+      if (l.note) bits.push(l.note);
+      if (l.grp) bits.push(x.sel ? '二選一・已選' : '二選一・未選');
+      if (x.st === 'buy') bits.push('建議購買成品・未計價');
+      if (x.st === 'est') bits.push('預估費用・未計價');
+      return bits.join('　');
+    };
+    const pdfSum = SECS.filter(function (sec) { return sec.grp === 'reno'; }).map((sec) => {
+      let a = 0;
+      L.forEach((l) => { if (l.sec === sec.id && this.cnt(l, s.d[l.id])) a += num(s.d[l.id].q) * num(s.d[l.id].p); });
+      return { no: sec.no, name: sec.name, amt: fmt(a) };
+    });
+    const pdfPass = L.filter(function (l) { return l.sec === 'px'; }).map((l, i) => {
+      const x = s.d[l.id];
+      const counted = this.cnt(l, x);
+      return { no: String(i + 1), name: l.name, remark: remark(l, x), uq: l.unit + ' ' + num(x.q), amt: counted ? fmt(num(x.q) * num(x.p)) : (x.st === 'est' ? fmt(num(x.q) * num(x.p)) + '（未計價）' : '—') };
+    });
+    const pdfDetail = SECS.filter(function (sec) { return sec.grp === 'reno'; }).map((sec) => {
+      let sub = 0;
+      const rs = L.filter(function (l) { return l.sec === sec.id; }).map((l, i) => {
+        const x = s.d[l.id];
+        const counted = this.cnt(l, x);
+        const a = num(x.q) * num(x.p);
+        if (counted) sub += a;
+        return {
+          i: String(i + 1), name: l.name, unit: l.unit, q: String(num(x.q)), p: fmt(num(x.p)),
+          amt: counted ? fmt(a) : '—', remark: remark(l, x),
+          style: PROW + (counted ? '' : 'color: #5B6673')
+        };
+      });
+      return { title: sec.no + ' ' + sec.name, rows: rs, sub: fmt(sub) };
+    });
+    const pdf = {
+      ver: dirty ? nextLabel + ' 草稿（尚未存版）' : last.label,
+      date: dirty ? '[送出日期]' : last.date,
+      sum: pdfSum, pass: pdfPass, detail: pdfDetail
+    };
+
+    return {
+      tabs: tabs,
+      isLib: s.tab === 'lib', isEdit: s.tab === 'edit', isCmp: s.tab === 'cmp', isPdf: s.tab === 'pdf',
+      hasToast: !!s.toast, toast: s.toast, closeToast: () => this.setState({ toast: '' }),
+      reset: () => this.setState(this.fresh()),
+      verChip: dirty ? '編輯中：' + nextLabel + ' 草稿（以 ' + last.label + ' 為底）' : '目前版本：' + last.label,
+      vendors: vendors, notImp: !s.imp, impRows: impRows, impCount: impRows.length,
+      doImport: () => this.setState({ imp: true, tab: 'edit', toast: '木工班報價已存入價格庫（' + impRows.length + ' 項）。紅色是現在售價低於成本的品項。' }),
+      cats: cats,
+      secs: secs, sum: sum, pays: pays,
+      saveTxt: dirty ? '存成新版本 ' + nextLabel : '沒有變更（' + last.label + '）',
+      save: () => this.save(),
+      goPdf: go('pdf'), goLib: go('lib'),
+      optsA: optsA, optsB: optsB, cmp: cmp, verList: verList,
+      pdf: pdf
+    };
+  }
+}
+// 公開版：數字已調整為示範用（非真實報價）
+const PUB = {"a1": {"p": 8960, "c": 6810, "raw": "1 式 × 6,810"}, "a2": {"p": 24780, "c": 10200, "raw": "60 尺 × 170 = 10,200"}, "a3": {"p": 8520, "c": 430, "raw": "1 式 × 430"}, "a4": {"p": 10240}, "a5": {"p": 33570}, "w1": {"p": 5010, "c": 3920, "raw": "26.5 坪 × 3,920"}, "w2": {"p": 5750, "c": 4180, "raw": "2.6 坪 × 4,180"}, "w3": {"p": 425, "c": 180, "raw": "73 尺 × 180"}, "w4": {"p": 445, "c": 335, "raw": "54.5 尺 × 335"}, "w5": {"p": 430, "c": 220, "raw": "91.5 尺 × 220"}, "w6": {"p": 5300, "c": 7290, "raw": "5 組 × 7,290"}, "w7": {"p": 1980, "c": 5060, "raw": "7 尺 × 5,060"}, "w8": {"p": 1770, "c": 7190, "raw": "6.5 處 × 7,190"}, "w9": {"p": 44460, "c": 29660, "raw": "4.4 尺 × 6,740 = 29,660"}, "w10": {"p": 56280, "c": 70210, "raw": "7.0 尺 × 10,030 = 70,210"}, "w11": {"p": 76710, "c": 52610, "raw": "7.9 尺 × 6,660 = 52,610"}, "w12": {"p": 77500, "c": 55120, "raw": "8.0 尺 × 6,890 = 55,120"}, "w13": {"p": 63170, "c": 17380, "raw": "2 組共 34,770"}, "w14": {"p": 49440}, "w15": {"p": 37530}, "w16": {"p": 10270, "c": 1840, "raw": "8.0 尺 × 230 = 1,840"}, "p1": {"p": 2220, "c": 1430, "raw": "29.1 坪 × 1,430"}, "p2": {"p": 4520, "c": 3960, "raw": "88 坪 × 3,960（帶料）"}, "p3": {"p": 32320}, "p4": {"p": 1900, "c": 1050, "raw": "83 尺 × 1,050"}, "p5": {"p": 10510, "c": 7080, "raw": "8 樘 × 7,080"}, "t1": {"p": 41370}, "t2": {"p": 26670}, "t3": {"p": 80380}, "t4": {"p": 72660}, "t5": {"p": 36230}, "t6": {"p": 55540}, "t7": {"p": 45160}, "t8": {"p": 21490}, "f1": {"p": 13170, "c": 11257, "raw": "含稅 11,820 ÷ 1.05（廠商建議售價 13,270）"}, "f2": {"p": 3280, "c": 2905, "raw": "含稅 3,050 ÷ 1.05（廠商建議售價 4,100）"}, "f3": {"p": 55110}, "x1": {"p": 595400, "c": 311810, "raw": "含稅優惠價 327,400 ÷ 1.05（原價 385,500）"}, "x2": {"p": 497500}, "x3": {"p": 391300}, "x4": {"p": 171900}, "x5": {"p": 265500}, "x6": {"p": 72610}};
+L.forEach(function (l) { const o = PUB[l.id]; if (!o) return; l.p = o.p; if (o.c != null) { if (l.cost != null) l.cost = o.c; else l.pend = o.c; } if (o.raw) l.raw = o.raw; });
+
+// ---------- 畫面層（靜態網頁版；報價邏輯沿用 Component） ----------
+const STORE = 'quote-proto-v1';
+let H = [];
+function on(fn) { H.push(fn); return H.length - 1; }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function each(list, fn) { return list.map(fn).join(''); }
+function when(c, html) { return c ? html : ''; }
+
+function topHtml(v) {
+  return '<div class="top"><div><h1>報價單系統 · 試用原型</h1>' +
+    '<p>示範案場 · 只放 5 個工種＋代付款項 · 數字為示範用（已調整，非真實報價）<br>簽約後會接到 <a href="../">工程日誌原型</a> 的進度表與請款</p></div>' +
+    '<div class="r"><span class="vchip">' + esc(v.verChip) + '</span>' +
+    '<button class="btn" data-click="' + on(v.reset) + '">重設示範</button></div></div>' +
+    '<nav class="tabs" aria-label="分頁">' + each(v.tabs, function (t) {
+      return '<button style="' + esc(t.style) + '" data-click="' + on(t.go) + '">' + esc(t.label) + '</button>';
+    }) + '</nav>' +
+    when(v.hasToast, '<div class="toast" role="status"><span>' + esc(v.toast) + '</span><button aria-label="關閉提示" data-click="' + on(v.closeToast) + '">關閉</button></div>');
+}
+
+function libHtml(v) {
+  const vendors = '<div class="grid-auto">' + each(v.vendors, function (x) {
+    return '<div class="card" style="gap:6px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
+      '<div style="font-size:15px;font-weight:700">' + esc(x.name) + '</div><span style="' + esc(x.chipStyle) + '">' + esc(x.status) + '</span></div>' +
+      '<div class="muted">' + esc(x.trade) + ' · 報價日 ' + esc(x.date) + '</div>' +
+      '<div style="font-size:12px;color:#3D4752">稅別：' + esc(x.tax) + '</div>' +
+      '<div style="font-size:12px;color:#3D4752">擷取 ' + esc(x.n) + ' 項 · 原始 PDF 已存檔</div></div>';
+  }) + '</div>';
+  const imp = when(v.notImp,
+    '<div class="warn-box"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:12px"><div>' +
+    '<div class="h">待核對：木工班蓋抓報價</div>' +
+    '<div style="font-size:13px;color:#3D4752;margin-top:4px;line-height:1.6">AI 從 PDF 擷取 ' + v.impCount + ' 項，已自動對應到報價單品項。橘色是要人看一眼的：單位換算、單位不一致。</div></div>' +
+    '<button class="btn-p" style="height:44px;padding:0 18px;font-size:14px" data-click="' + on(v.doImport) + '">核對完成，存入價格庫</button></div>' +
+    '<div class="scroll" style="border:1px solid #E1E5EA;border-radius:12px"><div class="tbl" style="min-width:900px">' +
+    '<div class="g-imp head fill"><div class="cell">廠商寫法</div><div class="cell">→ 對應報價單品項</div><div class="cell num">換算成本／單位</div><div class="cell">檢查</div></div>' +
+    each(v.impRows, function (r) {
+      return '<div class="g-imp row"><div class="cell" style="color:#3D4752">' + esc(r.raw) + '</div><div class="cell">' + esc(r.target) + '</div>' +
+        '<div class="cell num">' + esc(r.costTxt) + '</div><div class="cell"><span style="' + esc(r.chkStyle) + '">' + esc(r.chk) + '</span></div></div>';
+    }) + '</div></div></div>');
+  const cats = '<div class="card"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px">' +
+    '<div class="h">價格庫</div><div class="muted">成本一律換算成未稅；「上次賣價」來自 v2 報價；建議售價 = 成本 × (1 + 工種預設加成)</div></div>' +
+    '<div class="scroll" style="border:1px solid #E1E5EA;border-radius:12px"><div class="tbl" style="min-width:1060px">' +
+    '<div class="g-cat head fill"><div class="cell">品項</div><div class="cell">單位</div><div class="cell">廠商</div><div class="cell">廠商原始報價</div><div class="cell num">成本（未稅）</div><div class="cell num">上次賣價</div><div class="cell num">建議售價</div></div>' +
+    each(v.cats, function (c) {
+      return '<div class="cat-h">' + esc(c.title) + '</div>' + each(c.rows, function (r) {
+        return '<div class="g-cat row"><div class="cell">' + esc(r.name) + '</div><div class="cell" style="color:#3D4752">' + esc(r.unit) + '</div>' +
+          '<div class="cell" style="color:#3D4752">' + esc(r.ven) + '</div><div class="cell" style="color:#3D4752">' + esc(r.raw) + '</div>' +
+          '<div class="cell num"><span style="' + esc(r.costStyle) + '">' + esc(r.costTxt) + '</span></div>' +
+          '<div class="cell num">' + esc(r.last) + '</div><div class="cell num" style="color:#0A5050;font-weight:500">' + esc(r.sugg) + '</div></div>';
+      });
+    }) + '</div></div></div>';
+  return '<div class="col">' + vendors + imp + cats + '</div>';
+}
+
+function lineHtml(l) {
+  const tags = when(l.hasNote, '<span style="font-size:11px;color:#5B6673">' + esc(l.note) + '</span>') +
+    when(l.hasWarn, '<span class="tag" style="background:#FCEBD9;color:#8A3F06">' + esc(l.warn) + '，先跟廠商確認再調價</span>') +
+    when(l.isGrp, '<span class="tag" style="background:#E3EEF0;color:#0A5050">' + esc(l.grpLabel) + '</span>');
+  let st;
+  if (l.isGrp) {
+    st = (l.sel ? '<span class="picked">已選這個</span>' : '<button class="btn-pick" data-click="' + on(l.pick) + '">改選這個</button>') +
+      when(l.isEst, '<div style="font-size:11px;color:#5B6673;margin-top:4px">預估費用・未計價</div>');
+  } else {
+    const opt = function (val, label) { return '<option value="' + val + '"' + (l.st === val ? ' selected' : '') + '>' + label + '</option>'; };
+    st = '<select class="st" aria-label="' + esc(l.stLabel) + '" data-change="' + on(l.onSt) + '">' +
+      opt('bill', '計價') + opt('buy', '建議購買成品（不計價）') + opt('est', '預估費用（不計價）') + '</select>';
+  }
+  return '<div style="' + esc(l.trStyle) + '">' +
+    '<div style="padding:6px 8px"><div>' + esc(l.name) + '</div>' + when(tags, '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:2px">' + tags + '</div>') + '</div>' +
+    '<div style="padding:6px 8px">' + esc(l.unit) + '</div>' +
+    '<div style="padding:6px 8px;text-align:right"><input class="in q" type="text" inputmode="decimal" value="' + esc(l.q) + '" aria-label="' + esc(l.qLabel) + '" data-change="' + on(l.onQ) + '"></div>' +
+    '<div style="padding:6px 8px;text-align:right"><span style="' + esc(l.costStyle) + '">' + esc(l.costTxt) + '</span></div>' +
+    '<div style="padding:6px 8px;text-align:right"><input type="text" inputmode="decimal" value="' + esc(l.p) + '" aria-label="' + esc(l.pLabel) + '" style="' + esc(l.pStyle) + '" data-change="' + on(l.onP) + '"></div>' +
+    '<div style="padding:6px 8px;text-align:right;font-weight:500">' + esc(l.amtTxt) + '</div>' +
+    '<div style="padding:6px 8px"><span style="' + esc(l.mStyle) + '">' + esc(l.mTxt) + '</span>' +
+    when(l.canFix, '<button class="btn-sm" data-click="' + on(l.fix) + '">套建議價 ' + esc(l.suggTxt) + '</button>') + '</div>' +
+    '<div style="padding:6px 8px">' + st + '</div></div>';
+}
+
+function editHtml(v) {
+  const banner = when(v.notImp, '<div class="banner"><span>假設工程、木作工程有 17 項還沒有廠商成本（木工班報價待核對），毛利先不算。</span>' +
+    '<button data-click="' + on(v.goLib) + '">去價格庫核對</button></div>');
+  const secs = each(v.secs, function (s) {
+    return '<div class="card"><div class="sec-h"><div class="l">' +
+      '<span style="font-size:16px;font-weight:700">' + esc(s.no + ' ' + s.name) + '</span><span class="muted">' + esc(s.grpLabel) + '</span>' +
+      '<span style="font-size:14px;font-weight:700;color:#0A5050">小計 ' + esc(s.subTxt) + '</span><span class="muted">' + esc(s.marginTxt) + '</span></div>' +
+      '<div class="ctl"><label>預設加成 <input class="in s" type="text" inputmode="decimal" value="' + esc(s.mk) + '" data-change="' + on(s.onMk) + '"> %</label>' +
+      '<label>目標毛利 <input class="in s" type="text" inputmode="decimal" value="' + esc(s.tg) + '" data-change="' + on(s.onTg) + '"> %</label>' +
+      when(s.hasFix, '<button class="btn-red" data-click="' + on(s.fixAll) + '">' + esc(s.fixTxt) + '</button>') + '</div></div>' +
+      '<div class="scroll"><div class="tbl" style="min-width:1000px">' +
+      '<div class="g-line head"><div class="cell">品項</div><div class="cell">單位</div><div class="cell num">數量</div><div class="cell num">成本／單位</div><div class="cell num">售價／單位</div><div class="cell num">金額</div><div class="cell">毛利</div><div class="cell">計價方式</div></div>' +
+      each(s.lines, lineHtml) + '</div></div></div>';
+  });
+  const u = v.sum;
+  const side = '<div class="side">' +
+    '<div class="card" style="gap:8px"><div style="font-size:15px;font-weight:700;margin-bottom:4px">總價（未稅）</div>' +
+    '<div class="kv"><span>裝修工程小計</span><span>' + u.r + '</span></div>' +
+    '<div class="kv"><span>工程管理及監工費 10%</span><span>' + u.rm + '</span></div>' +
+    '<div class="kv b"><span>室內裝修總金額</span><span>' + u.rt + '</span></div><div class="sep"></div>' +
+    '<div class="kv"><span>代付款項小計</span><span>' + u.ps + '</span></div>' +
+    '<div class="kv"><span>工程管理及監工費 10%</span><span>' + u.pm + '</span></div>' +
+    '<div class="kv b"><span>代付款項總金額</span><span>' + u.pt + '</span></div><div class="sep"></div>' +
+    '<div class="kv big"><span>合約總額（未稅）</span><span>' + u.ct + '</span></div>' +
+    '<div class="kv" style="color:#5B6673"><span>營業稅 5%</span><span>' + u.tax + '</span></div></div>' +
+    '<div class="card" style="gap:8px"><div style="font-size:15px;font-weight:700;margin-bottom:4px">毛利（只有內部看得到）</div>' +
+    '<div class="kv"><span>有成本的品項售價</span><span>' + u.rv + '</span></div>' +
+    '<div class="kv"><span>成本</span><span>' + u.cs + '</span></div>' +
+    '<div class="kv b"><span>品項毛利</span><span>' + esc(u.gp) + '</span></div>' +
+    '<div class="kv"><span>＋監工費收入</span><span>' + u.mg + '</span></div>' +
+    '<div class="flagrow" style="background:#FDECEA;color:#8F1B12;margin-top:6px"><span>低於成本</span><b>' + u.neg + ' 項</b></div>' +
+    '<div class="flagrow" style="background:#FCEBD9;color:#8A3F06"><span>毛利低於工種目標</span><b>' + u.low + ' 項</b></div>' +
+    '<div class="flagrow" style="border:1px dashed #5B6673;color:#3D4752"><span>缺成本（沒算進毛利）</span><b>' + u.miss + ' 項 · ' + u.missAmt + '</b></div></div>' +
+    '<button class="btn-p" data-click="' + on(v.save) + '">' + esc(v.saveTxt) + '</button>' +
+    '<button class="btn-o" data-click="' + on(v.goPdf) + '">預覽屋主 PDF</button>' +
+    '<div class="card" style="gap:8px"><div style="font-size:15px;font-weight:700">付款期別 → 簽約後接工程日誌</div>' +
+    '<div class="muted" style="line-height:1.6">簽約後每一期綁進度表上的工程分項；那一項標完成，系統提醒可以請款。</div>' +
+    each(v.pays, function (p) {
+      return '<div class="pay"><div style="display:flex;justify-content:space-between;font-weight:500"><span>' + esc(p.n) + ' ' + p.pct + '%</span><span>' + p.amt + '</span></div>' +
+        '<div style="font-size:12px;color:#3D4752;margin-top:2px">' + esc(p.when) + '</div><div style="font-size:12px;color:#0A5050;margin-top:2px">' + esc(p.link) + '</div></div>';
+    }) + '</div></div>';
+  return '<div class="col" style="gap:12px">' + banner + '<div class="layout"><div class="main">' + secs + '</div>' + side + '</div></div>';
+}
+
+function cmpHtml(v) {
+  const c = v.cmp;
+  const pills = function (lbl, opts) {
+    return '<div class="pills"><span class="lbl">' + lbl + '</span>' + each(opts, function (o) {
+      return '<button style="' + esc(o.style) + '" data-click="' + on(o.go) + '">' + esc(o.label) + '</button>';
+    }) + '</div>';
+  };
+  return '<div class="col">' +
+    '<div class="card" style="gap:12px">' + pills('從', v.optsA) + pills('到', v.optsB) +
+    '<div class="muted">v1 是從 v2 備註回推的初版（「取消改其他材料」「如確認取消須改為木作封版」那幾項）。</div></div>' +
+    '<div class="grid-auto" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">' +
+    '<div class="stat"><div class="muted">' + esc(c.aLabel) + ' 合約總額（未稅）</div><div class="v">' + c.aTot + '</div></div>' +
+    '<div class="stat"><div class="muted">' + esc(c.bLabel) + ' 合約總額（未稅）</div><div class="v">' + c.bTot + '</div></div>' +
+    '<div class="stat"><div class="muted">差額（含監工費）· 變動 ' + c.n + ' 項</div><div style="' + esc(c.deltaStyle) + '">' + c.delta + '</div></div></div>' +
+    '<div class="card">' + (c.none ? '<div style="font-size:14px;color:#3D4752;padding:12px 0">這兩個版本沒有差異。</div>' :
+      '<div class="scroll"><div class="tbl" style="min-width:860px">' +
+      '<div class="g-cmp head"><div class="cell">工種</div><div class="cell">品項</div><div class="cell">改了什麼</div><div class="cell num">前</div><div class="cell num">後</div><div class="cell num">金額差</div></div>' +
+      each(c.rows, function (r) {
+        return '<div class="g-cmp row"><div class="cell" style="color:#3D4752">' + esc(r.sec) + '</div><div class="cell">' + esc(r.name) + '</div><div class="cell">' + esc(r.kind) + '</div>' +
+          '<div class="cell num">' + esc(r.before) + '</div><div class="cell num">' + esc(r.after) + '</div><div class="cell num"><span style="' + esc(r.dStyle) + '">' + esc(r.delta) + '</span></div></div>';
+      }) + '</div></div>') + '</div>' +
+    '<div class="card" style="gap:8px"><div style="font-size:15px;font-weight:700">版本紀錄</div>' + each(v.verList, function (x) {
+      return '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:13px;border-top:1px solid #EEF1F4;padding-top:8px">' +
+        '<span style="font-weight:500">' + esc(x.label) + '</span><span style="color:#5B6673">' + esc(x.date) + '</span><span>' + esc(x.tot) + '</span></div>';
+    }) + '</div></div>';
+}
+
+function pdfHtml(v) {
+  const p = v.pdf, u = v.sum;
+  const tot = function (label, val, bold) { return '<div class="tot-r"' + (bold ? ' style="font-weight:700"' : '') + '><span>' + label + '</span><span>' + val + '</span></div>'; };
+  return '<div class="col" style="align-items:center">' +
+    '<div class="paper-note"><span>屋主視角 · ' + esc(p.ver) + ' · 成本、加成、毛利都不會出現在 PDF</span><span>會輸出 PDF ＋ Excel，用 LINE 傳給屋主</span></div>' +
+    '<div class="paper"><div class="paper-in">' +
+    '<div style="text-align:center"><div class="muted" style="font-size:13px">[工作室名稱]</div><div style="font-size:24px;font-weight:700;letter-spacing:4px;margin-top:4px">裝修工程報價單</div></div>' +
+    '<div class="two"><div>客戶名稱：[屋主姓名]</div><div>地址：[示範地址]</div><div>專案名稱：示範案場</div><div>日期：' + esc(p.date) + '　有效期限 15 天</div></div>' +
+    '<div><div class="ph">一、裝修工程</div>' + each(p.sum, function (s) {
+      return '<div class="g-psum"><div class="pc">' + esc(s.no) + '</div><div class="pc">' + esc(s.name) + '</div><div class="pc" style="color:#3D4752">式 1</div><div class="pc" style="text-align:right">' + s.amt + '</div></div>';
+    }) + tot('小計', u.r) + tot('工程管理及監照費用 10%', u.rm) + tot('室內裝修總金額（未稅）', u.rt, true) + '</div>' +
+    '<div><div class="ph">二、設備材料及配合工程</div>' + each(p.pass, function (s) {
+      return '<div class="g-ppass"><div class="pc">' + esc(s.no) + '</div><div class="pc">' + esc(s.name) + when(s.remark, '<div style="font-size:11px;color:#5B6673">' + esc(s.remark) + '</div>') + '</div>' +
+        '<div class="pc" style="color:#3D4752">' + esc(s.uq) + '</div><div class="pc" style="text-align:right">' + esc(s.amt) + '</div></div>';
+    }) + tot('小計', u.ps) + tot('工程管理及監照費用 10%', u.pm) + tot('代付款項總金額（未稅）', u.pt, true) + '</div>' +
+    '<div style="display:flex;justify-content:flex-end"><div class="boxed">' +
+    '<div class="kv"><span style="color:#18212B">合計（未稅）</span><span>' + u.ct + '</span></div>' +
+    '<div class="kv"><span style="color:#18212B">營業稅 5%</span><span>' + u.tax + '</span></div>' +
+    '<div class="kv b" style="font-size:15px"><span>總計（含稅）</span><span>' + u.ctx + '</span></div></div></div>' +
+    each(p.detail, function (d) {
+      return '<div style="font-size:12px"><div class="ph2">' + esc(d.title) + '</div>' +
+        '<div class="g-pdet" style="color:#5B6673;font-weight:500"><div class="pc">項次</div><div class="pc">品項</div><div class="pc">單位</div><div class="pc" style="text-align:right">數量</div><div class="pc" style="text-align:right">單價</div><div class="pc" style="text-align:right">金額</div><div class="pc">備註／品牌</div></div>' +
+        each(d.rows, function (r) {
+          return '<div style="' + esc(r.style) + '"><div class="pc">' + r.i + '</div><div class="pc">' + esc(r.name) + '</div><div class="pc">' + esc(r.unit) + '</div>' +
+            '<div class="pc" style="text-align:right">' + esc(r.q) + '</div><div class="pc" style="text-align:right">' + esc(r.p) + '</div><div class="pc" style="text-align:right">' + esc(r.amt) + '</div>' +
+            '<div class="pc" style="color:#3D4752">' + esc(r.remark) + '</div></div>';
+        }) +
+        '<div class="tot-r" style="font-weight:500"><span>小計</span><span style="width:80px">' + d.sub + '</span><span style="width:160px"></span></div></div>';
+    }) +
+    '<div><div class="ph2">付款方法</div>' + each(v.pays, function (x) {
+      return '<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid #EEF1F4"><span>' + esc(x.n) + '：' + esc(x.when) + '，支付工程總金額 ' + x.pct + '%</span><span style="white-space:nowrap">' + x.amt + '</span></div>';
+    }) + '<div style="font-size:12px;color:#3D4752;margin-top:6px">本報價單內容依設計圖面為準；未列之項目不含於工程總價中；材料如需變更需補差額。</div></div>' +
+    '<div class="two" style="gap:24px;margin-top:12px"><div style="border-top:1px solid #18212B;padding-top:6px">合約工程承包商簽章　　日期：</div><div style="border-top:1px solid #18212B;padding-top:6px">客戶簽章　　日期：</div></div>' +
+    '</div></div></div>';
+}
+
+let APP = null;
+function render() {
+  H = [];
+  const v = APP.renderVals();
+  let body = '';
+  if (v.isLib) body = libHtml(v);
+  else if (v.isEdit) body = editHtml(v);
+  else if (v.isCmp) body = cmpHtml(v);
+  else body = pdfHtml(v);
+  document.getElementById('app').innerHTML = '<div class="wrap">' + topHtml(v) + body + '</div>';
+}
+function persist(s) { try { localStorage.setItem(STORE, JSON.stringify(Object.assign({}, s, { toast: '' }))); } catch (e) {} }
+
+DCLogic.prototype.setState = function (u) {
+  const prevTab = this.state.tab;
+  const val = typeof u === 'function' ? u(this.state) : u;
+  this.state = Object.assign({}, this.state, val);
+  persist(this.state);
+  render();
+  if (this.state.tab !== prevTab) window.scrollTo(0, 0);
+};
+
+APP = new Component({});
+try {
+  const saved = JSON.parse(localStorage.getItem(STORE) || 'null');
+  if (saved && saved.d && saved.vers && Object.keys(saved.d).length === L.length) APP.state = Object.assign(APP.state, saved);
+} catch (e) {}
+
+document.addEventListener('click', function (e) {
+  const el = e.target.closest('[data-click]');
+  if (el && H[el.dataset.click]) H[el.dataset.click](e);
+});
+document.addEventListener('change', function (e) {
+  const el = e.target.closest('[data-change]');
+  if (el && H[el.dataset.change]) H[el.dataset.change]({ target: el });
+});
+render();
+
+</script>
+</body>
+</html>

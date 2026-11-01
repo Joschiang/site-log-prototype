@@ -90,6 +90,24 @@ button{font:inherit;color:inherit;cursor:pointer}
 .tip svg{flex-shrink:0;margin-top:2px}
 
 .trade{display:flex;align-items:center;justify-content:space-between;padding:4px 0;font-size:14px}
+.trade-blk{padding:8px 0}
+.trade-blk+.trade-blk{border-top:1px solid var(--line2)}
+.hints{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;align-items:center}
+.hint{min-height:36px;padding:4px 12px;border:1px dashed var(--teal);border-radius:18px;background:#fff;color:var(--teal-d);font-size:12px;text-align:left}
+.work{padding:10px 12px;border-radius:10px;background:var(--gray-l);margin:6px 0 8px}
+.work .w{font-size:13px;line-height:1.6;color:var(--ink)}
+.gc-day{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line2)}
+.gc-day:first-child{border-top:none}
+.gc-date{width:64px;flex-shrink:0;font-size:12px;font-weight:700;color:var(--ink2);padding-top:8px}
+.gc-evs{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.gc-ev{border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;font-weight:500;line-height:1.4}
+.gc-ev .s{display:block;font-size:11px;font-weight:400;opacity:.9}
+.gc-dot{display:inline-block;width:10px;height:10px;border-radius:5px;flex-shrink:0}
+.mem{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line2);flex-wrap:wrap}
+.mem:first-of-type{border-top:none}
+.mem .nm{flex:1;min-width:110px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px}
+.mbtn{height:36px;padding:0 12px;border:1px solid var(--gray-b);border-radius:18px;background:#fff;font-size:12px;color:var(--ink2)}
+.mbtn[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
 .stepper{display:flex;align-items:center;gap:8px}
 .stepper button{width:44px;height:44px;border:1px solid var(--gray-b);border-radius:22px;background:#fff;font-size:18px}
 .stepper .n{min-width:40px;text-align:center}
@@ -279,9 +297,9 @@ textarea.sm{min-height:120px;padding:12px}
   var TRADE_ORDER = ['水電', '冷氣', '防水', '泥作', '木作', '鋁窗', '油漆'];
 
   var PAST_LOGS = [
-    { t: D('10/29'), trades: '木作 2 人、泥作 1 人', entries: ['主臥與次臥之間隔間單面封板完成', '浴室門框就位，準備崁縫'],
+    { t: D('10/29'), work: ['木作（2 人）：主臥、次臥隔間單面封板', '泥作（1 人）：浴室門框崁縫'], entries: ['主臥與次臥之間隔間單面封板完成', '浴室門框就位，準備崁縫'],
       photos: [{ label: '隔間封板', tone: '#DED9D1', trade: '木作' }, { label: '浴室門框', tone: '#D6DCE2', trade: '木作' }] },
-    { t: D('10/28'), trades: '泥作 1 人、木作 2 人', entries: ['浴室、廚房磁磚保護完成', '訂製門框進場，開始安裝'],
+    { t: D('10/28'), work: ['泥作（1 人）：浴室、廚房磁磚保護', '木作（2 人）：訂製門框進場安裝'], entries: ['浴室、廚房磁磚保護完成', '訂製門框進場，開始安裝'],
       photos: [{ label: '磁磚保護', tone: '#CDD5DC', trade: '泥作' }, { label: '門框進場', tone: '#D3DAD6', trade: '木作' }, { label: '廚房磁磚', tone: '#E0DCD4', trade: '泥作' }] }
   ];
   // 過去只留在內部的照片：封板、貼磚前的管線與防水紀錄（保固時用）
@@ -323,6 +341,32 @@ textarea.sm{min-height:120px;padding:12px}
   function planRange(r) { var a = isoT(r.start), b = isoT(r.end); return md(a) + (a === b ? '' : ' – ' + md(b)); }
   function planSorted(list) { return list.slice().sort(function (a, b) { return isoT(a.start) - isoT(b.start) || a.id - b.id; }); }
 
+  // 「今天做什麼」的建議：內部進度表上該工種施工中的項目＋之前寫過的
+  var TRADE_HINTS = {
+    '木作': ['隔間雙面封板（隔音棉、隔熱棉）', '訂製門及窗框安裝', '天花下角料'],
+    '泥作': ['門框崁縫填實', '浴室門框收邊修補'],
+    '鋁窗': ['鋁門窗複量＋下定']
+  };
+  // Google 日曆示意：其他兩個案場（虛構）只用來看多案場、多顏色的樣子
+  var GC_SITES = [
+    { id: 'a', name: '示範案場', color: '#0F6E6E' },
+    { id: 'b', name: '示範案場 B', color: '#6B4FA0', plan: [
+      { name: '泥作／防水工程', type: 'work', start: '2025-10-06', end: '2025-10-24' },
+      { name: '木作工程', type: 'work', start: '2025-10-27', end: '2025-11-28' },
+      { name: '油漆／塗料', type: 'work', start: '2025-12-01', end: '2025-12-19' },
+      { name: '交屋', type: 'handover', start: '2025-12-26', end: '2025-12-26' }
+    ] },
+    { id: 'c', name: '示範案場 C', color: '#B4470C', plan: [
+      { name: '保護／拆除工程', type: 'work', start: '2025-11-03', end: '2025-11-07' },
+      { name: '水電工程', type: 'work', start: '2025-11-10', end: '2025-11-21' },
+      { name: '泥作工程', type: 'work', start: '2025-11-24', end: '2025-12-19' },
+      { name: '木作工程', type: 'work', start: '2026-01-05', end: '2026-02-13' },
+      { name: '交屋', type: 'handover', start: '2026-02-27', end: '2026-02-27' }
+    ] }
+  ];
+  var GC_PEOPLE = { admin: '專案管理者', A: '設計師 A', B: '設計師 B' };
+  var GC_MONTHS = ['2025-10', '2025-11', '2025-12', '2026-01', '2026-02'];
+
   var TODOS = ['泥作修補浴室收邊（10/31）', '跟水電約主臥插座修正時間'];
   var NOTE = '鄰居反映午休時段噪音，已向管委會報備，13:00 前不做切割。';
   var REPORT = '★每週工程匯報\n▫114/10/27（一）～114/11/02（日）\n\n▫本週進度：\n10/27（一）磁磚保護\n10/27（一）～10/31（五）訂製門及窗框安裝、泥作崁縫填實\n10/27（一）～11/02（日）隔間雙面封板（隔音棉、隔熱棉）\n10/30（四）鋁門窗複量完成並下定\n\n▫下週進度：\n11/03（一）～11/16（日）天花板角材施作\n11/05（三）燈具位置及冷氣檢修口放樣\n\n謝謝您\n\nHave a great weekend!';
@@ -336,7 +380,7 @@ textarea.sm{min-height:120px;padding:12px}
       clientNew: false, designerNew: false, showDone: false, nextId: 5,
       dAlbum: null, cAlbum: null, cConfirm: null, cPick: null,
       issueDraft: '', issueLevel: '一般', convertId: null, cvTitle: '', cvNote: '', cvDue: '',
-      trades: [{ id: 'w', name: '木作', n: 2 }, { id: 'm', name: '泥作', n: 1 }, { id: 'a', name: '鋁窗', n: 1 }],
+      trades: [{ id: 'w', name: '木作', n: 2, work: '隔間雙面封板（隔音棉、隔熱棉）' }, { id: 'm', name: '泥作', n: 1, work: '門框崁縫填實' }, { id: 'a', name: '鋁窗', n: 1, work: '' }],
       entries: [
         { id: 1, text: '訂製門框安裝完成，泥作崁縫填實中', pub: false },
         { id: 2, text: '主臥、次臥隔間雙面封板，隔音棉已填入', pub: false },
@@ -366,12 +410,13 @@ textarea.sm{min-height:120px;padding:12px}
       nextConfirm: 4, nextIssue: 5,
       plan: JSON.parse(JSON.stringify(PLAN)), planPub: JSON.parse(JSON.stringify(PLAN)), planPubAt: '114/10/27（一）09:30', nextPlan: 19,
       cMonth: '2025-10', cPlanView: 'grid',
+      gcAs: 'admin', gcMonth: '2025-11', gcMembers: { a: ['A'], b: ['A', 'B'], c: ['B'] },
       report: REPORT
     };
   }
 
   // ---------- 狀態（存在這台裝置的瀏覽器，重整不會消失） ----------
-  var KEY = 'site-log-proto-v3';
+  var KEY = 'site-log-proto-v4';
   var S;
   try { S = JSON.parse(localStorage.getItem(KEY)) || initState(); } catch (e) { S = initState(); }
   S.snack = null; // 提示列只在當下出現，重整後不再跳出
@@ -385,10 +430,14 @@ textarea.sm{min-height:120px;padding:12px}
 
   // ---------- 小工具 ----------
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function tradesText(trades) { return trades.filter(function (t) { return t.n > 0; }).map(function (t) { return t.name + ' ' + t.n + ' 人'; }).join('、'); }
+  function tradesWork(trades) { return trades.filter(function (t) { return t.n > 0; }).map(function (t) { return t.name + '（' + t.n + ' 人）' + (t.work && t.work.trim() ? '：' + t.work.trim() : ''); }); }
+  function workBlock(lines) {
+    if (!lines || !lines.length) return '';
+    return '<div class="work"><div class="mini">今日施作</div>' + lines.map(function (w) { return '<div class="w">' + esc(w) + '</div>'; }).join('') + '</div>';
+  }
   function currentPublic() {
     return {
-      trades: tradesText(S.trades),
+      work: tradesWork(S.trades),
       entries: S.entries.filter(function (e) { return e.pub; }).map(function (e) { return e.text; }),
       photos: S.photos.filter(function (p) { return p.pub; }).map(function (p) { return { label: p.label, tone: p.tone, trade: p.trade }; })
     };
@@ -537,6 +586,11 @@ textarea.sm{min-height:120px;padding:12px}
           '<div class="btns" style="margin-top:0"><button class="btn sm line" data-act="go" data-arg="sched">內部細項</button><button class="btn sm line-teal" data-act="go" data-arg="plan">屋主版時刻表</button></div>' +
         '</div>' +
         '<div class="card stack">' +
+          '<div class="between"><div class="h">Google 日曆</div><span class="chip gray">示意</span></div>' +
+          '<div class="body">所有案場疊在同一個 Google 日曆，一個案場一個顏色。只放屋主版的大工種和交屋；日曆只看，修改都在系統裡。</div>' +
+          '<button class="btn sm line" data-act="go" data-arg="gcal">預覽日曆與權限</button>' +
+        '</div>' +
+        '<div class="card stack">' +
           '<div class="between"><div class="h">內部相簿</div><span class="chip gray">依工種</span></div>' +
           '<div class="body">全部照片都在這裡，包含沒公開的。封板、貼磚前的管線和防水照片，保固時直接找。</div>' +
           '<button class="btn sm line" data-act="go" data-arg="albums">打開相簿</button>' +
@@ -559,13 +613,21 @@ textarea.sm{min-height:120px;padding:12px}
       '<div class="scroll" data-scroll="d-edit">' +
         '<div class="tip">' + I.lock + '<span>所有內容預設「僅內部」。要給屋主看的，點右邊按鈕切成「客戶可見」。</span></div>' +
         '<div class="card" style="padding:14px 16px">' +
-          '<div class="h sm" style="margin-bottom:4px">工種與人數</div>' +
+          '<div class="between"><div class="h sm">工種、人數、今天做什麼</div><span class="chip teal">屋主看得到</span></div>' +
           S.trades.map(function (t) {
-            return '<div class="trade"><span>' + esc(t.name) + '</span><div class="stepper">' +
+            var hints = TRADE_HINTS[t.name] || [];
+            return '<div class="trade-blk"><div class="trade"><span>' + esc(t.name) + '</span><div class="stepper">' +
               '<button data-act="trade" data-arg="' + t.id + ':-1" aria-label="' + esc(t.name) + '減少一人">−</button>' +
               '<span class="n">' + t.n + ' 人</span>' +
-              '<button data-act="trade" data-arg="' + t.id + ':1" aria-label="' + esc(t.name) + '增加一人">+</button></div></div>';
+              '<button data-act="trade" data-arg="' + t.id + ':1" aria-label="' + esc(t.name) + '增加一人">+</button></div></div>' +
+              (t.n > 0
+                ? '<label for="tw' + t.id + '" class="sr-only">' + esc(t.name) + '今天做什麼</label>' +
+                  '<input id="tw' + t.id + '" class="txt full" data-trade-work="' + t.id + '" value="' + esc(t.work || '') + '" placeholder="今天做什麼，例如：天花下角料" autocomplete="off">' +
+                  (hints.length ? '<div class="hints"><span class="muted">建議</span>' + hints.map(function (h, i) { return '<button class="hint" data-act="twork" data-arg="' + t.id + ':' + i + '">' + esc(h) + '</button>'; }).join('') + '</div>' : '')
+                : '<div class="muted">今天沒有人到場</div>') +
+              '</div>';
           }).join('') +
+          '<div class="muted" style="margin-top:6px">建議來自內部進度表上施工中的項目和之前寫過的內容，點一下就填入</div>' +
         '</div>' +
         '<div class="card" style="padding:14px 16px">' +
           '<div class="between" style="margin-bottom:4px"><div class="h sm">工程內容</div><div class="muted">客戶可見 ' + pubE + ' / ' + S.entries.length + '</div></div>' +
@@ -606,14 +668,14 @@ textarea.sm{min-height:120px;padding:12px}
     var pub = currentPublic();
     var privE = S.entries.length - pub.entries.length;
     var privP = S.photos.length - pub.photos.length;
-    var has = pub.entries.length + pub.photos.length > 0;
+    var has = pub.work.length + pub.entries.length + pub.photos.length > 0;
     return '<div class="screen">' +
       navbar('go', 'edit', '返回日誌', '確認發布') +
       '<div class="scroll" data-scroll="d-confirm">' +
         '<div class="card hl">' +
           '<div style="display:flex;align-items:center;gap:6px;color:var(--teal-d)" class="h sm">' + I.eye + '<span>屋主會看到</span></div>' +
           (has
-            ? '<div class="muted" style="margin:8px 0 6px">' + esc(pub.trades || '（未填工種）') + '</div>' +
+            ? workBlock(pub.work) +
               pub.entries.map(function (t) { return '<div class="li">· ' + esc(t) + '</div>'; }).join('') +
               (pub.photos.length ? '<div class="grid3" style="gap:6px;margin-top:8px">' + pub.photos.map(function (p) { return photoSmall(p); }).join('') + '</div>' : '')
             : '<div class="body" style="color:var(--amber-d);margin-top:8px">還沒有勾選任何「客戶可見」的內容，屋主今天不會看到更新。</div>') +
@@ -766,11 +828,71 @@ textarea.sm{min-height:120px;padding:12px}
     '</div>';
   }
 
+  // ---------- Google 日曆（示意） ----------
+  function gcEvents(site) {
+    var plan = site.id === 'a' ? S.planPub : site.plan;
+    return plan.filter(function (r) { return r.type === 'work' || r.type === 'handover'; }).map(function (r) {
+      return { site: site, name: r.name, a: isoT(r.start), b: isoT(r.end), handover: r.type === 'handover' };
+    });
+  }
+  function gcVisible() {
+    return GC_SITES.filter(function (st) { return S.gcAs === 'admin' || (S.gcMembers[st.id] || []).indexOf(S.gcAs) >= 0; });
+  }
+  function dGcal() {
+    var sites = gcVisible();
+    var y = +S.gcMonth.slice(0, 4), m = +S.gcMonth.slice(5);
+    var m0 = Date.UTC(y, m - 1, 1), m1 = Date.UTC(y, m, 0);
+    var evs = [];
+    sites.forEach(function (st) { gcEvents(st).forEach(function (e) { if (e.b >= m0 && e.a <= m1) evs.push(e); }); });
+    var byDay = {};
+    evs.forEach(function (e) { var k = Math.max(e.a, m0); (byDay[k] = byDay[k] || []).push(e); });
+    var days = Object.keys(byDay).map(Number).sort(function (a, b) { return a - b; });
+    var agenda = days.length ? days.map(function (k) {
+      return '<div class="gc-day"><div class="gc-date">' + md(k) + '</div><div class="gc-evs">' +
+        byDay[k].sort(function (a, b) { return a.a - b.a; }).map(function (e) {
+          var range = e.a === e.b ? '整天' : md(e.a) + ' – ' + md(e.b) + (e.a < m0 ? '（進行中）' : '');
+          return '<div class="gc-ev" style="background:' + e.site.color + '">' + (e.handover ? '★ ' : '') + esc(e.name) + '｜' + esc(e.site.name) + '<span class="s">' + range + '</span></div>';
+        }).join('') + '</div></div>';
+    }).join('') : '<div class="body">這個月沒有排程</div>';
+    var who = ['admin', 'A', 'B'].map(function (k) {
+      return '<button data-act="gcas" data-arg="' + k + '" aria-pressed="' + (S.gcAs === k) + '">' + GC_PEOPLE[k] + '</button>';
+    }).join('');
+    var legend = '<div class="legend" style="font-size:12px">' + sites.map(function (st) { return '<span style="display:inline-flex;align-items:center;gap:6px"><span class="gc-dot" style="background:' + st.color + '"></span>' + esc(st.name) + '</span>'; }).join('') + '</div>';
+    var members = S.gcAs === 'admin'
+      ? '<div class="card" style="padding:14px 16px">' +
+          '<div class="between" style="margin-bottom:4px"><div class="h sm">案場成員</div><span class="chip gray">像 Google 雲端硬碟分享</span></div>' +
+          '<div class="muted" style="margin-bottom:4px">勾選哪位設計師負責，系統就把那本日曆分享給他（只能查看）</div>' +
+          GC_SITES.map(function (st) {
+            var mem = S.gcMembers[st.id] || [];
+            return '<div class="mem"><div class="nm"><span class="gc-dot" style="background:' + st.color + '"></span>' + esc(st.name) + '</div>' +
+              ['A', 'B'].map(function (p) { var on = mem.indexOf(p) >= 0; return '<button class="mbtn" data-act="gcmem" data-arg="' + st.id + ':' + p + '" aria-pressed="' + on + '">' + (on ? '✓ ' : '') + GC_PEOPLE[p] + '</button>'; }).join('') +
+              '</div>';
+          }).join('') +
+          '<div class="muted" style="margin-top:6px">專案管理者固定看得到全部案場</div>' +
+        '</div>'
+      : '<div class="tip">' + I.lock + '<span>' + GC_PEOPLE[S.gcAs] + '只看得到負責的 ' + sites.length + ' 個案場' + (sites.length ? '：' + sites.map(function (st) { return esc(st.name); }).join('、') : '') + '。點事件會有「在系統裡打開」的連結，細項到系統裡看。</span></div>';
+    return '<div class="screen">' +
+      navbar('go', 'home', '返回案場', 'Google 日曆預覽', '示意畫面 · 不會真的連到 Google') +
+      '<div class="scroll" data-scroll="d-gcal">' +
+        '<div class="tip">' + I.eye + '<span>每個案場一本日曆，系統自動寫入屋主版時刻表的大工種起訖和交屋。改時刻表後按「更新給屋主」，日曆也會跟著更新。</span></div>' +
+        '<div><div class="lbl">用誰的身分看</div><div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr))" role="group" aria-label="切換身分">' + who + '</div></div>' +
+        members +
+        '<div class="card" style="padding:14px 16px">' +
+          '<div class="mchips" role="group" aria-label="選擇月份" style="margin-bottom:10px">' + GC_MONTHS.map(function (mk) {
+            return '<button class="mchip" data-act="gcm" data-arg="' + mk + '" aria-pressed="' + (S.gcMonth === mk) + '">' + (mk.slice(0, 4) !== '2025' ? mk.slice(0, 4) + '/' : '') + (+mk.slice(5)) + ' 月</button>';
+          }).join('') + '</div>' +
+          (sites.length ? legend : '') +
+          '<div style="margin-top:8px">' + (sites.length ? agenda : '<div class="body">還沒有分到任何案場</div>') + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
   // ---------- 屋主端 ----------
   function feed() {
-    var list = PAST_LOGS.map(function (l) { return { date: roc(l.t), trades: l.trades, entries: l.entries, photos: l.photos, today: false }; });
+    var list = PAST_LOGS.map(function (l) { return { date: roc(l.t), work: l.work, entries: l.entries, photos: l.photos, today: false }; });
     var s = S.snapshot;
-    if (s && (s.entries.length || s.photos.length)) list.unshift({ date: roc(TODAY), trades: s.trades, entries: s.entries, photos: s.photos, today: true });
+    if (s && (s.work.length || s.entries.length || s.photos.length)) list.unshift({ date: roc(TODAY), work: s.work, entries: s.entries, photos: s.photos, today: true });
     return list;
   }
 
@@ -801,6 +923,7 @@ textarea.sm{min-height:120px;padding:12px}
       '</div>' +
       '<div class="card' + (top.today ? ' hl' : '') + '">' +
         '<div class="between" style="margin-bottom:8px"><div class="h">最新動態</div><span class="muted">' + (top.today ? '<span class="chip teal" style="margin-right:6px">今天</span>' : '') + top.date + '</span></div>' +
+        workBlock(top.work) +
         top.entries.slice(0, 2).map(function (t) { return '<div class="li">· ' + esc(t) + '</div>'; }).join('') +
         (top.photos.length || more ? '<div class="muted" style="margin-top:6px">' + (top.photos.length ? top.photos.length + ' 張現場照片' + more : more.slice(1)) + '</div>' : '') +
         '<button class="btn sm line-teal" style="margin-top:10px" data-act="tab" data-arg="log">看工程日誌</button>' +
@@ -897,7 +1020,7 @@ textarea.sm{min-height:120px;padding:12px}
       feed().map(function (f) {
         return '<div class="card' + (f.today ? ' hl' : '') + '">' +
           '<div class="between"><div class="h">' + f.date + '</div>' + (f.today ? '<span class="chip teal">今天</span>' : '') + '</div>' +
-          '<div class="muted" style="margin:2px 0 8px">' + esc(f.trades || '') + '</div>' +
+          workBlock(f.work) +
           f.entries.map(function (t) { return '<div class="li">· ' + esc(t) + '</div>'; }).join('') +
           (f.photos.length ? '<div class="grid3" style="gap:6px;margin-top:10px">' + f.photos.map(function (p) { return photoSmall(p); }).join('') + '</div>' : '') +
         '</div>';
@@ -932,7 +1055,7 @@ textarea.sm{min-height:120px;padding:12px}
   }
 
   function designerApp() {
-    var m = { edit: dEdit, confirm: dConfirm, report: dReport, albums: dAlbums, issues: dIssues, convert: dConvert, sched: dSched, plan: dPlan };
+    var m = { edit: dEdit, confirm: dConfirm, report: dReport, albums: dAlbums, issues: dIssues, convert: dConvert, sched: dSched, plan: dPlan, gcal: dGcal };
     return (m[S.dScreen] || dHome)() + toastHtml(S.dToast);
   }
 
@@ -998,6 +1121,16 @@ textarea.sm{min-height:120px;padding:12px}
     trade: function (arg) {
       var p = arg.split(':');
       set({ trades: S.trades.map(function (t) { return t.id === p[0] ? Object.assign({}, t, { n: Math.max(0, t.n + +p[1]) }) : t; }) });
+    },
+    twork: function (arg) {
+      var p = arg.split(':');
+      set({ trades: S.trades.map(function (t) {
+        if (t.id !== p[0]) return t;
+        var h = (TRADE_HINTS[t.name] || [])[+p[1]];
+        var cur = (t.work || '').trim();
+        if (!h || cur.indexOf(h) >= 0) return t;
+        return Object.assign({}, t, { work: cur ? cur + '、' + h : h });
+      }) });
     },
     entry: function (arg) { set({ entries: S.entries.map(function (e) { return String(e.id) === arg ? Object.assign({}, e, { pub: !e.pub }) : e; }) }); },
     photo: function (arg) { set({ photos: S.photos.map(function (p) { return String(p.id) === arg ? Object.assign({}, p, { pub: !p.pub }) : p; }) }); },
@@ -1074,6 +1207,18 @@ textarea.sm{min-height:120px;padding:12px}
       if (!title) { if (input) input.focus(); return; }
       set({ issues: [{ id: S.nextIssue, title: title, detail: '', level: S.issueLevel, status: '回報', at: '10/30', converted: false }].concat(S.issues), nextIssue: S.nextIssue + 1, issueDraft: '' });
     },
+    // Google 日曆示意
+    gcas: function (arg) { set({ gcAs: arg }); },
+    gcm: function (arg) { set({ gcMonth: arg }); },
+    gcmem: function (arg) {
+      var p = arg.split(':');
+      var mem = Object.assign({}, S.gcMembers);
+      var list = (mem[p[0]] || []).slice();
+      var i = list.indexOf(p[1]);
+      if (i >= 0) list.splice(i, 1); else list.push(p[1]);
+      mem[p[0]] = list;
+      set({ gcMembers: mem });
+    },
     // 屋主版工程時刻表
     calm: function (arg) { set({ cMonth: arg }); },
     pview: function (arg) { set({ cPlanView: arg }); },
@@ -1101,6 +1246,8 @@ textarea.sm{min-height:120px;padding:12px}
     ACT[el.getAttribute('data-act')](el.getAttribute('data-arg'));
   });
   app.addEventListener('input', function (ev) {
+    var tw = ev.target.getAttribute('data-trade-work');
+    if (tw) { S.trades = S.trades.map(function (t) { return t.id === tw ? Object.assign({}, t, { work: ev.target.value }) : t; }); save(); return; }
     var pf = ev.target.getAttribute('data-plan');
     if (pf && ev.target.tagName === 'INPUT' && ev.target.type === 'text') { setPlanField(pf, ev.target.value); return; }
     var k = ev.target.getAttribute('data-input');

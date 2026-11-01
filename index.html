@@ -870,7 +870,7 @@ textarea.sm{min-height:120px;padding:12px}
           }).join('') +
           '<div class="muted" style="margin-top:6px">專案管理者固定看得到全部案場</div>' +
         '</div>'
-      : '<div class="tip">' + I.lock + '<span>' + GC_PEOPLE[S.gcAs] + '只看得到負責的 ' + sites.length + ' 個案場' + (sites.length ? '：' + sites.map(function (st) { return esc(st.name); }).join('、') : '') + '。點事件會有「在系統裡打開」的連結，細項到系統裡看。</span></div>';
+      : '<div class="tip">' + I.lock + '<span>' + GC_PEOPLE[S.gcAs] + ' 只看得到負責的 ' + sites.length + ' 個案場' + (sites.length ? '：' + sites.map(function (st) { return esc(st.name); }).join('、') : '') + '。點事件會有「在系統裡打開」的連結，細項到系統裡看。</span></div>';
     return '<div class="screen">' +
       navbar('go', 'home', '返回案場', 'Google 日曆預覽', '示意畫面 · 不會真的連到 Google') +
       '<div class="scroll" data-scroll="d-gcal">' +

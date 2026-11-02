@@ -5,34 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#0F6E6E">
-<title>工程日誌 · 試用原型</title>
-<meta property="og:title" content="工程日誌 · 試用原型">
+<meta name="theme-color" content="#231815">
+<title>本處設計 · 工程日誌</title>
+<link rel="icon" type="image/png" href="assets/favicon-48.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<meta property="og:title" content="本處設計 · 工程日誌（試用原型）">
+<meta property="og:image" content="https://joschiang.github.io/site-log-prototype/assets/og.png">
 <meta property="og:description" content="設計師寫日誌、勾選要公開的內容，屋主在手機上看工程進度、確認待決事項。範例：示範案場">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#18212B;--ink2:#3D4752;--muted:#5B6673;
-  --line:#E1E5EA;--line2:#EDF0F3;--bg:#F5F7F9;--page:#E8EBEE;
-  --teal:#0F6E6E;--teal-d:#0A5050;--teal-l:#DDF0EE;--teal-xl:#E3EEF0;
+  --ink:#231815;--ink2:#443A36;--muted:#6B625C;
+  --line:#E4DFD8;--line2:#EEEAE4;--bg:#F6F4F0;--page:#E9E5DF;
+  --brand:#231815;--brand-d:#231815;--brand-l:#E9E4DC;--brand-xl:#F0EDE7;
   --amber:#B45309;--amber-d:#8A3F06;--amber-l:#FCEBD9;
   --red:#D13A3F;--red-d:#9B1C22;--red-l:#FBE3E4;
-  --gray-l:#EEF1F4;--gray-b:#C9D0D7;--bar-todo:#A9B3BD;
+  --gray-l:#EEEBE6;--gray-b:#CBC5BD;--bar-todo:#ADA69E;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
 body{font-family:'Noto Sans TC',system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif;color:var(--ink);background:var(--page);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit;cursor:pointer}
-:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 .root{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 40px;gap:20px}
 .topbar{width:100%;max-width:876px;display:flex;justify-content:space-between;align-items:center;gap:12px}
 .topbar h1{font-size:22px;margin:0}
 .topbar p{margin:4px 0 0;font-size:13px;color:var(--muted)}
-.reset{height:44px;padding:0 18px;border:1px solid var(--gray-b);border-radius:12px;background:#fff;font-size:14px;flex-shrink:0}
+.reset{height:44px;padding:0 18px;border:1px solid var(--gray-b);border-radius:8px;background:#fff;font-size:14px;flex-shrink:0}
 .switch{display:none}
 .stage{display:flex;gap:64px;justify-content:center}
 .col{display:flex;flex-direction:column;gap:12px}
@@ -42,9 +45,15 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 .screen{position:absolute;inset:0;display:flex;flex-direction:column}
 .appbar{padding:20px 20px 14px;background:#fff;border-bottom:1px solid var(--line)}
-.appbar.client{background:var(--teal);color:#fff;border-bottom:none}
-.eyebrow{font-size:12px;color:var(--muted)}
-.client .eyebrow{color:#D5ECEA}
+.appbar.client{padding-top:2px;background:var(--brand);color:#fff;border-bottom:none}
+.brandbar{display:flex;align-items:center;gap:10px;height:50px;padding:0 16px;background:var(--brand);color:#fff;flex-shrink:0}
+.brandbar .mk{display:block;width:28px;height:28px}
+.brandbar .wd{display:block;width:88px;height:auto}
+.brandbar .role{margin-left:auto;font-size:12px;letter-spacing:.12em;color:#D9D4CD}
+.brand-foot{display:flex;justify-content:center;margin-top:auto;padding:20px 0 4px}
+.brand-foot img{display:block;width:96px;height:auto;opacity:.75}
+.topbar .who{display:flex;align-items:center;gap:10px;min-width:0}
+.topbar .who img{display:block;width:36px;height:36px;flex-shrink:0}
 .appbar .title{font-size:19px;font-weight:700;margin-top:2px}
 .navbar{display:flex;align-items:center;gap:6px;padding:10px 12px;background:#fff;border-bottom:1px solid var(--line)}
 .navbar .grow{flex:1;min-width:0}
@@ -53,10 +62,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .scroll{flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .scroll>*{flex-shrink:0}
 .footer{padding:12px 16px 16px;background:#fff;border-top:1px solid var(--line)}
-.backlink{display:flex;align-items:center;gap:2px;height:44px;margin:-8px 0 -4px -10px;padding:0 10px;border:none;background:transparent;color:var(--teal-d);font-size:14px;font-weight:500;align-self:flex-start}
+.backlink{display:flex;align-items:center;gap:2px;height:44px;margin:-8px 0 -4px -10px;padding:0 10px;border:none;background:transparent;color:var(--brand-d);font-size:14px;font-weight:500;align-self:flex-start}
 
-.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
-.card.hl{border:2px solid var(--teal)}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}
+.card.hl{border:2px solid var(--brand)}
 .card.warn{border:2px solid var(--amber)}
 .stack{display:flex;flex-direction:column;gap:10px}
 .between{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -68,36 +77,36 @@ button{font:inherit;color:inherit;cursor:pointer}
 .row{padding:10px 0;border-top:1px solid var(--line2)}
 .row:first-of-type{border-top:none}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:11px;font-size:11px;font-weight:500;flex-shrink:0;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:4px;font-size:11px;font-weight:500;flex-shrink:0;white-space:nowrap}
 .chip.amber{background:var(--amber-l);color:var(--amber-d)}
-.chip.teal{background:var(--teal-l);color:var(--teal-d)}
+.chip.brand{background:var(--brand);color:#fff}
 .chip.gray{background:var(--gray-l);color:var(--ink2)}
 .chip.red{background:var(--red-l);color:var(--red-d)}
-.chip.lg{height:28px;padding:0 10px;border-radius:14px;font-size:12px}
-.btn{display:flex;align-items:center;justify-content:center;width:100%;height:48px;border-radius:12px;font-size:15px;font-weight:500;border:1px solid transparent}
+.chip.lg{height:28px;padding:0 10px;border-radius:4px;font-size:12px}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:48px;border-radius:8px;font-size:15px;font-weight:500;border:1px solid transparent}
 .btn.sm{height:44px;font-size:14px}
 .btn.dark{background:var(--ink);color:#fff}
-.btn.teal{background:var(--teal);color:#fff}
+.btn.brand{background:var(--brand);color:#fff}
 .btn.line{background:#fff;border-color:var(--gray-b);color:var(--ink)}
-.btn.line-teal{background:#fff;border-color:var(--teal);color:var(--teal-d)}
+.btn.line-brand{background:#fff;border-color:var(--brand);color:var(--brand-d)}
 .btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
 .btns{display:flex;gap:8px;margin-top:10px}
 .btns .btn{flex:1;width:auto;padding:0 8px}
 .bar{height:8px;background:var(--line2);border-radius:4px;overflow:hidden}
 .bar.lg{height:10px;border-radius:5px}
-.bar>i{display:block;height:100%;background:var(--teal);border-radius:inherit}
-.tip{display:flex;gap:8px;align-items:flex-start;padding:12px;border-radius:12px;background:var(--teal-xl);font-size:12px;line-height:1.6}
+.bar>i{display:block;height:100%;background:var(--brand);border-radius:inherit}
+.tip{display:flex;gap:8px;align-items:flex-start;padding:12px;border-radius:8px;background:var(--brand-xl);font-size:12px;line-height:1.6}
 .tip svg{flex-shrink:0;margin-top:2px}
 
 .trade{display:flex;align-items:center;justify-content:space-between;padding:4px 0;font-size:14px}
 .trade-blk{padding:8px 0}
 .trade-blk+.trade-blk{border-top:1px solid var(--line2)}
 .hints{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;align-items:center}
-.hint{min-height:36px;padding:4px 12px;border:1px dashed var(--teal);border-radius:18px;background:#fff;color:var(--teal-d);font-size:12px;text-align:left}
+.hint{min-height:36px;padding:4px 12px;border:1px dashed var(--brand);border-radius:6px;background:#fff;color:var(--brand-d);font-size:12px;text-align:left}
 .work{padding:10px 12px;border-radius:10px;background:var(--gray-l);margin:6px 0 8px}
 .work .w{font-size:13px;line-height:1.6;color:var(--ink)}
 .tline{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0 0;font-size:13px;line-height:1.5}
-.picker{margin-top:10px;padding:12px;border:2px solid var(--teal);border-radius:12px;background:var(--teal-xl)}
+.picker{margin-top:10px;padding:12px;border:2px solid var(--brand);border-radius:8px;background:var(--brand-xl)}
 .del{width:36px;height:40px;flex-shrink:0;border:none;border-radius:10px;background:transparent;color:var(--muted);font-size:18px}
 .mc-head{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-bottom:1px solid var(--line)}
 .mc-head span{padding:8px 0;text-align:center;font-size:11px;color:var(--muted)}
@@ -107,8 +116,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .mc-day:first-child{border-left:none}
 .mc-day b{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:12px;font-weight:500}
 .mc-day.out{background:var(--bg);color:var(--bar-todo)}
-.mc-day[aria-pressed="true"]{background:var(--teal-l)}
-.mc-day.today b{background:var(--teal);color:#fff;font-weight:700}
+.mc-day[aria-pressed="true"]{background:var(--brand-l)}
+.mc-day.today b{background:var(--brand);color:#fff;font-weight:700}
 .mc-bar{height:17px;line-height:17px;padding:0 4px;overflow:hidden;white-space:nowrap;color:#fff;font-size:11px;font-weight:500;pointer-events:none}
 .mc-bar.s{margin-left:2px;border-top-left-radius:4px;border-bottom-left-radius:4px}
 .mc-bar.e{margin-right:2px;border-top-right-radius:4px;border-bottom-right-radius:4px}
@@ -116,15 +125,15 @@ button{font:inherit;color:inherit;cursor:pointer}
 .mem{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line2);flex-wrap:wrap}
 .mem:first-of-type{border-top:none}
 .mem .nm{flex:1;min-width:110px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px}
-.mbtn{height:36px;padding:0 12px;border:1px solid var(--gray-b);border-radius:18px;background:#fff;font-size:12px;color:var(--ink2)}
-.mbtn[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
+.mbtn{height:36px;padding:0 12px;border:1px solid var(--gray-b);border-radius:6px;background:#fff;font-size:12px;color:var(--ink2)}
+.mbtn[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
 .stepper{display:flex;align-items:center;gap:8px}
-.stepper button{width:44px;height:44px;border:1px solid var(--gray-b);border-radius:22px;background:#fff;font-size:18px}
+.stepper button{width:44px;height:44px;border:1px solid var(--gray-b);border-radius:8px;background:#fff;font-size:18px}
 .stepper .n{min-width:40px;text-align:center}
 .entry{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line2)}
 .entry .t{flex:1;font-size:14px;line-height:1.5;overflow-wrap:anywhere}
-.vis{display:flex;align-items:center;gap:4px;flex-shrink:0;height:40px;padding:0 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid var(--gray-b);background:var(--gray-l);color:var(--ink2)}
-.vis.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.vis{display:flex;align-items:center;gap:4px;flex-shrink:0;height:40px;padding:0 12px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid var(--gray-b);background:var(--gray-l);color:var(--ink2)}
+.vis.on{background:var(--brand);border-color:var(--brand);color:#fff}
 .input-row{display:flex;gap:8px;margin-top:10px}
 .txt{flex:1;min-width:0;height:44px;padding:0 12px;border:1px solid var(--gray-b);border-radius:10px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
 .txt.full{width:100%;flex:none}
@@ -134,38 +143,38 @@ button{font:inherit;color:inherit;cursor:pointer}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .ph-cell{display:flex;flex-direction:column;gap:4px;min-width:0}
 .ph{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:104px;padding:22px 4px 6px;border-radius:10px;border:3px solid transparent;font-size:11px;color:var(--ink2);line-height:1.3;text-align:center}
-.ph.on{border-color:var(--teal)}
+.ph.on{border-color:var(--brand)}
 .ph .badge{position:absolute;top:6px;left:6px;height:20px;line-height:20px;padding:0 6px;border-radius:10px;font-size:10px;background:rgba(255,255,255,.92);color:var(--ink2)}
-.ph.on .badge{background:var(--teal);color:#fff}
+.ph.on .badge{background:var(--brand);color:#fff}
 .ph.sm{height:80px;padding:4px;border:none}
 .ph.sm .badge{top:4px;left:4px}
 .ph-trade{height:36px;width:100%;padding:0 4px;border:1px solid var(--gray-b);border-radius:8px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
-.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:56px;padding:0 16px;border:1px solid var(--line);border-radius:16px;background:#fff;font-size:14px;text-align:left}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:56px;padding:0 16px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px;text-align:left}
 .track{position:relative;flex-shrink:0;width:48px;height:28px;border-radius:14px;background:var(--gray-b);transition:background .15s}
 .track i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:11px;background:#fff;transition:left .15s}
-[aria-pressed="true"] .track{background:var(--teal)}
+[aria-pressed="true"] .track{background:var(--brand)}
 [aria-pressed="true"] .track i{left:23px}
-textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b);border-radius:12px;font:inherit;font-size:16px;line-height:1.7;resize:vertical;color:var(--ink);background:#fff}
+textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b);border-radius:8px;font:inherit;font-size:16px;line-height:1.7;resize:vertical;color:var(--ink);background:#fff}
 textarea.sm{min-height:120px;padding:12px}
-.opt{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:10px 14px;border:1px solid var(--gray-b);border-radius:12px;background:#fff;text-align:left;font-size:14px}
-.opt[aria-pressed="true"]{border:2px solid var(--teal);background:var(--teal-xl)}
+.opt{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:10px 14px;border:1px solid var(--gray-b);border-radius:8px;background:#fff;text-align:left;font-size:14px}
+.opt[aria-pressed="true"]{border:2px solid var(--brand);background:var(--brand-xl)}
 .radio{width:20px;height:20px;border-radius:10px;border:2px solid var(--gray-b);flex-shrink:0;background:#fff}
-.opt[aria-pressed="true"] .radio{border:6px solid var(--teal)}
-.quote{padding:12px;border-radius:12px;background:var(--gray-l);font-size:13px;line-height:1.6;color:var(--ink2)}
+.opt[aria-pressed="true"] .radio{border:6px solid var(--brand)}
+.quote{padding:12px;border-radius:8px;background:var(--gray-l);font-size:13px;line-height:1.6;color:var(--ink2)}
 
 .album-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.album{display:flex;flex-direction:column;padding:0;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;text-align:left}
+.album{display:flex;flex-direction:column;padding:0;border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden;text-align:left}
 .album .cover{display:flex;align-items:center;justify-content:center;width:100%;height:92px}
 .album .meta{padding:10px 12px}
 .album .name{font-size:15px;font-weight:700}
 
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:12px;background:var(--gray-l)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:8px;background:var(--gray-l)}
 .seg button{height:36px;border:none;border-radius:9px;background:transparent;font-size:13px;font-weight:500;color:var(--ink2)}
 .seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(24,33,43,.15)}
 .legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:11px;color:var(--ink2)}
 .legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
 .mchips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
-.mchip{flex-shrink:0;height:36px;padding:0 12px;border:1px solid var(--gray-b);border-radius:18px;background:#fff;font-size:13px}
+.mchip{flex-shrink:0;height:36px;padding:0 12px;border:1px solid var(--gray-b);border-radius:6px;background:#fff;font-size:13px}
 .mchip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
 .cal-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
 .cal{border-collapse:collapse;font-size:10px}
@@ -183,7 +192,7 @@ textarea.sm{min-height:120px;padding:12px}
 .mini{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}
 .fld{flex:1;min-width:0}
 
-.big{font-size:36px;font-weight:700;color:var(--teal)}
+.big{font-size:36px;font-weight:700;color:var(--brand)}
 .dotrow{display:flex;gap:10px;align-items:flex-start;padding:6px 0}
 .dot{width:8px;height:8px;border-radius:4px;margin-top:7px;flex-shrink:0}
 .months{position:relative;height:16px}
@@ -197,8 +206,8 @@ textarea.sm{min-height:120px;padding:12px}
 
 .tabbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#fff;border-top:1px solid var(--line);padding:6px 8px 10px}
 .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:52px;border:none;background:transparent;color:var(--muted);font-size:11px}
-.tab[aria-current="page"]{color:var(--teal);font-weight:700}
-.toast{position:absolute;top:12px;left:12px;right:12px;z-index:5;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:none;border-radius:16px;background:#fff;box-shadow:0 8px 24px rgba(24,33,43,.22);text-align:left}
+.tab[aria-current="page"]{color:var(--brand);font-weight:700}
+.toast{position:absolute;top:12px;left:12px;right:12px;z-index:5;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:none;border-radius:10px;background:#fff;box-shadow:0 8px 24px rgba(24,33,43,.22);text-align:left}
 .toast .ic{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:#06C755;color:#fff;flex-shrink:0}
 .toast .ic.in{background:var(--ink)}
 .toast .tx{display:flex;flex-direction:column;gap:2px}
@@ -212,6 +221,7 @@ textarea.sm{min-height:120px;padding:12px}
   .topbar{max-width:none;padding:10px 16px;background:#fff}
   .topbar h1{font-size:16px}
   .topbar p{font-size:12px;margin-top:2px}
+  .topbar .who img{display:none}
   .reset{height:40px;padding:0 12px;font-size:13px}
   .switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 16px 10px;background:#fff;border-bottom:1px solid var(--line)}
   .sw{position:relative;height:40px;border-radius:10px;border:1px solid var(--gray-b);background:#fff;font-size:14px;font-weight:500}
@@ -223,7 +233,7 @@ textarea.sm{min-height:120px;padding:12px}
   .device{width:100%;height:100%;min-height:0;border:none;border-radius:0}
   .stage[data-view="designer"] .col-client,.stage[data-view="client"] .col-designer{display:none}
   .footer,.tabbar{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
-  .snack.show{display:flex;position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:20;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--ink);color:#fff;font-size:14px;box-shadow:0 8px 24px rgba(24,33,43,.3)}
+  .snack.show{display:flex;position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:20;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;background:var(--ink);color:#fff;font-size:14px;box-shadow:0 8px 24px rgba(24,33,43,.3)}
   .snack .grow{flex:1}
   .snack button{height:40px;padding:0 14px;border:none;border-radius:10px;background:#fff;color:var(--ink);font-size:14px;font-weight:700;flex-shrink:0}
 }
@@ -303,8 +313,8 @@ textarea.sm{min-height:120px;padding:12px}
   var COUNT = { done: 0, doing: 0, todo: 0 };
   ROWS.forEach(function (r) { COUNT[r.st]++; });
   var ST_LABEL = { done: '完成', doing: '施工中', todo: '未開始' };
-  var ST_CHIP = { done: 'teal', doing: 'amber', todo: 'gray' };
-  var ST_BAR = { done: '#0F6E6E', doing: '#B45309', todo: '#A9B3BD' };
+  var ST_CHIP = { done: 'brand', doing: 'amber', todo: 'gray' };
+  var ST_BAR = { done: '#231815', doing: '#B45309', todo: '#A9B3BD' };
 
   // 相簿依工種排列的順序
   var TRADE_ORDER = ['水電', '冷氣', '防水', '泥作', '木作', '鋁窗', '油漆'];
@@ -530,11 +540,15 @@ textarea.sm{min-height:120px;padding:12px}
   };
   function tabIcon(d) { return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg>'; }
   function photoSmall(p, showBadge) {
-    var badge = showBadge ? '<span class="badge"' + (p.pub ? ' style="background:var(--teal);color:#fff"' : '') + '>' + (p.pub ? '客戶可見' : '僅內部') + '</span>' : '';
+    var badge = showBadge ? '<span class="badge"' + (p.pub ? ' style="background:var(--brand);color:#fff"' : '') + '>' + (p.pub ? '客戶可見' : '僅內部') + '</span>' : '';
     return '<div class="ph sm" style="background:' + p.tone + (showBadge ? ';padding-top:22px' : '') + '">' + badge + I.cam + '<span>' + esc(p.label) + '</span></div>';
   }
+  function brandBar(role) {
+    return '<div class="brandbar"><img class="mk" src="assets/mark-w.png" alt=""><img class="wd" src="assets/word-w.png" alt="本處設計 Inner Design"><span class="role">' + role + '</span></div>';
+  }
+  function brandFoot() { return '<div class="brand-foot"><img src="assets/logo-full.png" alt="本處設計 Inner Design"></div>'; }
   function navbar(backAct, backArg, backLabel, title, sub, right) {
-    return '<div class="navbar"><button class="icon-btn" data-act="' + backAct + '"' + (backArg ? ' data-arg="' + backArg + '"' : '') + ' aria-label="' + backLabel + '">' + I.back + '</button>' +
+    return brandBar('設計師端') + '<div class="navbar"><button class="icon-btn" data-act="' + backAct + '"' + (backArg ? ' data-arg="' + backArg + '"' : '') + ' aria-label="' + backLabel + '">' + I.back + '</button>' +
       '<div class="grow"><div class="title">' + title + '</div>' + (sub ? '<div class="muted">' + sub + '</div>' : '') + '</div>' + (right || '') + '</div>';
   }
 
@@ -592,7 +606,7 @@ textarea.sm{min-height:120px;padding:12px}
     var hint = '看完現場後，把照片和今天的施工內容貼上來，再勾選要給屋主看的部分。';
     var btn = '寫今日日誌';
     if (S.snapshot && !dirty) {
-      chip = '<span class="chip teal">已發布</span>';
+      chip = '<span class="chip brand">已發布</span>';
       hint = '屋主看得到 ' + S.entries.filter(function (e) { return e.pub; }).length + ' 條內容、' + S.snapshot.photos.length + ' 張照片。';
       btn = '查看／修改日誌';
     } else if (dirty) {
@@ -603,10 +617,10 @@ textarea.sm{min-height:120px;padding:12px}
     var oi = openIssues();
     var oc = openConfirms();
     return '<div class="screen">' +
-      '<div class="appbar"><div class="eyebrow">[工作室名稱] · 設計師</div><div class="title">我的案場</div></div>' +
+      brandBar('設計師端') + '<div class="appbar"><div class="title">我的案場</div></div>' +
       '<div class="scroll" data-scroll="d-home">' +
         '<div class="card">' +
-          '<div class="between" style="align-items:flex-start"><div><div class="h" style="font-size:16px">示範案場</div><div class="muted" style="margin-top:2px">住宅翻修 · 114/08/20 – 115/02/09</div></div><div style="font-size:20px;font-weight:700;color:var(--teal)">' + PCT + '%</div></div>' +
+          '<div class="between" style="align-items:flex-start"><div><div class="h" style="font-size:16px">示範案場</div><div class="muted" style="margin-top:2px">住宅翻修 · 114/08/20 – 115/02/09</div></div><div style="font-size:20px;font-weight:700;color:var(--brand)">' + PCT + '%</div></div>' +
           '<div class="bar" style="margin-top:12px"><i style="width:' + PCT + '%"></i></div>' +
           '<div class="muted" style="margin-top:8px">今日 ' + roc(TODAY) + ' · 施工中 ' + DOING.length + ' 項</div>' +
         '</div>' +
@@ -617,16 +631,16 @@ textarea.sm{min-height:120px;padding:12px}
           (S.snapshot ? '<button class="btn sm line" data-act="unpublish">撤回發布</button>' : '') +
         '</div>' +
         '<div class="card' + (oi.length ? ' warn' : '') + '">' +
-          '<div class="between" style="margin-bottom:6px"><div class="h">內部回報事項</div><span class="chip ' + (oi.length ? 'amber">未解決 ' + oi.length + ' 件' : 'teal">都已解決') + '</span></div>' +
+          '<div class="between" style="margin-bottom:6px"><div class="h">內部回報事項</div><span class="chip ' + (oi.length ? 'amber">未解決 ' + oi.length + ' 件' : 'brand">都已解決') + '</span></div>' +
           oi.slice(0, 2).map(function (i) { return '<div class="dotrow"><span class="dot" style="background:' + (i.level === '影響費用' ? 'var(--red-d)' : i.level === '影響工期' ? 'var(--amber)' : 'var(--bar-todo)') + '"></span><div class="li" style="padding:0">' + esc(i.title) + ' <span class="muted">· ' + i.status + '</span></div></div>'; }).join('') +
           '<button class="btn sm line" style="margin-top:8px" data-act="go" data-arg="issues">查看全部・新增回報</button>' +
         '</div>' +
         '<div class="card">' +
-          '<div class="between" style="margin-bottom:4px"><div class="h">屋主待確認</div><span class="chip ' + (oc.length ? 'amber">等待中 ' + oc.length + ' 項' : 'teal">都已確認') + '</span></div>' +
+          '<div class="between" style="margin-bottom:4px"><div class="h">屋主待確認</div><span class="chip ' + (oc.length ? 'amber">等待中 ' + oc.length + ' 項' : 'brand">都已確認') + '</span></div>' +
           S.confirms.map(function (c) {
             var d = dueInfo(c);
             var stat = c.status === 'done'
-              ? '<span class="chip teal">已確認</span>'
+              ? '<span class="chip brand">已確認</span>'
               : '<span class="chip ' + (d.left !== null && d.left <= 7 ? 'red' : 'amber') + '">剩 ' + d.left + ' 天</span>';
             return '<div class="row"><div class="between" style="align-items:flex-start"><div class="li" style="padding:0;font-weight:500">' + esc(c.title) + '</div>' + stat + '</div>' +
               (c.status === 'done'
@@ -638,7 +652,7 @@ textarea.sm{min-height:120px;padding:12px}
         '<div class="card stack">' +
           '<div class="between"><div class="h">進度表</div>' + (planDirty() ? '<span class="chip amber">有修改還沒更新給屋主</span>' : '<span class="chip gray">內外分開</span>') + '</div>' +
           '<div class="body">內部看細項工程；屋主只看大工種的工程時刻表。現場工期有變動就在「現場工期調整」改，變更的天數會用紅色標給屋主看。</div>' +
-          '<div class="btns" style="margin-top:0"><button class="btn sm line" data-act="go" data-arg="sched">內部細項</button><button class="btn sm line-teal" data-act="go" data-arg="plan">現場工期調整</button></div>' +
+          '<div class="btns" style="margin-top:0"><button class="btn sm line" data-act="go" data-arg="sched">內部細項</button><button class="btn sm line-brand" data-act="go" data-arg="plan">現場工期調整</button></div>' +
         '</div>' +
         '<div class="card stack">' +
           '<div class="between"><div class="h">案場月曆</div><span class="chip gray">僅內部</span></div>' +
@@ -650,6 +664,7 @@ textarea.sm{min-height:120px;padding:12px}
           '<div class="body">全部照片都在這裡，包含沒公開的。封板、貼磚前的管線和防水照片，保固時直接找。</div>' +
           '<button class="btn sm line" data-act="go" data-arg="albums">打開相簿</button>' +
         '</div>' +
+        brandFoot() +
       '</div>' +
     '</div>';
   }
@@ -669,14 +684,14 @@ textarea.sm{min-height:120px;padding:12px}
   function dEdit() {
     var pubE = S.entries.filter(function (e) { return e.pub; }).length;
     var pubP = S.photos.filter(function (p) { return p.pub; }).length;
-    var chip = !S.snapshot ? '<span class="chip amber">草稿</span>' : (isDirty() ? '<span class="chip amber">未發布修改</span>' : '<span class="chip teal">已發布</span>');
+    var chip = !S.snapshot ? '<span class="chip amber">草稿</span>' : (isDirty() ? '<span class="chip amber">未發布修改</span>' : '<span class="chip brand">已發布</span>');
     var tradeNames = S.trades.map(function (t) { return t.name; });
     return '<div class="screen">' +
       navbar('go', 'home', '返回案場', '今日工程日誌', roc(TODAY) + ' · 示範案場', chip) +
       '<div class="scroll" data-scroll="d-edit">' +
         '<div class="tip">' + I.lock + '<span>所有內容預設「僅內部」。要給屋主看的，點右邊按鈕切成「客戶可見」。</span></div>' +
         '<div class="card" style="padding:14px 16px">' +
-          '<div class="between"><div class="h sm">工種、人數、今天做什麼</div><span class="chip teal">屋主看得到</span></div>' +
+          '<div class="between"><div class="h sm">工種、人數、今天做什麼</div><span class="chip brand">屋主看得到</span></div>' +
           S.trades.map(function (t) {
             var hints = TRADE_HINTS[t.name] || [];
             var lines = tradeLines(t);
@@ -685,7 +700,7 @@ textarea.sm{min-height:120px;padding:12px}
               '<span class="n">' + t.n + ' 人</span>' +
               '<button data-act="trade" data-arg="' + t.id + ':1" aria-label="' + esc(t.name) + '增加一人">+</button></div></div>' +
               (t.n > 0
-                ? lines.map(function (e) { return '<div class="tline"><span>' + esc(e.work) + '</span><span class="chip ' + (e.pub ? 'teal">屋主看得到' : 'gray">僅內部') + '</span></div>'; }).join('') +
+                ? lines.map(function (e) { return '<div class="tline"><span>' + esc(e.work) + '</span><span class="chip ' + (e.pub ? 'brand">屋主看得到' : 'gray">僅內部') + '</span></div>'; }).join('') +
                   '<label for="tw' + t.id + '" class="sr-only">' + esc(t.name) + '今天做什麼</label>' +
                   '<input id="tw' + t.id + '" class="txt full" data-trade-work="' + t.id + '" value="' + esc(t.work || '') + '" placeholder="今天做什麼，例如：天花下角料" autocomplete="off">' +
                   (hints.length ? '<div class="hints"><span class="muted">建議</span>' + hints.map(function (h, i) { return '<button class="hint" data-act="twork" data-arg="' + t.id + ':' + i + '">' + esc(h) + '</button>'; }).join('') + '</div>' : '')
@@ -705,7 +720,7 @@ textarea.sm{min-height:120px;padding:12px}
             : '<form class="input-row" data-form="add"><label for="draft" class="sr-only">新增一條工程內容</label>' +
               '<input id="draft" class="txt" data-input="draft" value="' + esc(S.draft) + '" placeholder="例如 水電：主臥插座修正" enterkeyhint="done" autocomplete="off">' +
               '<button class="add" type="submit">新增</button></form>' +
-              (S.linkNote ? '<div class="muted" style="margin-top:8px;color:var(--teal-d)">' + esc(S.linkNote) + '</div>' : '')) +
+              (S.linkNote ? '<div class="muted" style="margin-top:8px;color:var(--brand-d)">' + esc(S.linkNote) + '</div>' : '')) +
         '</div>' +
         '<div class="card" style="padding:14px 16px">' +
           '<div class="between" style="margin-bottom:4px"><div class="h sm">現場照片</div><div class="muted">客戶可見 ' + pubP + ' / ' + S.photos.length + '</div></div>' +
@@ -737,7 +752,7 @@ textarea.sm{min-height:120px;padding:12px}
       navbar('go', 'edit', '返回日誌', '確認發布') +
       '<div class="scroll" data-scroll="d-confirm">' +
         '<div class="card hl">' +
-          '<div style="display:flex;align-items:center;gap:6px;color:var(--teal-d)" class="h sm">' + I.eye + '<span>屋主會看到</span></div>' +
+          '<div style="display:flex;align-items:center;gap:6px;color:var(--brand-d)" class="h sm">' + I.eye + '<span>屋主會看到</span></div>' +
           (has
             ? workBlock(pub.work) +
               pub.entries.map(function (t) { return '<div class="li">· ' + esc(t) + '</div>'; }).join('') +
@@ -750,7 +765,7 @@ textarea.sm{min-height:120px;padding:12px}
         '</div>' +
         '<button class="toggle-row" data-act="notify" aria-pressed="' + S.notify + '"><span>同時推播 LINE 通知給屋主</span><span class="track"><i></i></span></button>' +
       '</div>' +
-      '<div class="footer"><button class="btn teal" data-act="publish">' + (S.snapshot ? '更新發布' : '確認發布') + '</button></div>' +
+      '<div class="footer"><button class="btn brand" data-act="publish">' + (S.snapshot ? '更新發布' : '確認發布') + '</button></div>' +
     '</div>';
   }
 
@@ -783,14 +798,14 @@ textarea.sm{min-height:120px;padding:12px}
           var acts = '';
           if (i.status !== '已解決') {
             acts = '<div class="btns"><button class="btn sm line" data-act="advance" data-arg="' + i.id + '">標為' + STATUS_NEXT[i.status] + '</button>' +
-              (i.converted ? '' : '<button class="btn sm line-teal" data-act="convert" data-arg="' + i.id + '">轉成屋主待確認</button>') + '</div>';
+              (i.converted ? '' : '<button class="btn sm line-brand" data-act="convert" data-arg="' + i.id + '">轉成屋主待確認</button>') + '</div>';
           }
           return '<div class="card' + (i.status === '已解決' ? '' : (i.level === '影響費用' ? ' warn' : '')) + '" style="padding:14px 16px' + (i.status === '已解決' ? ';opacity:.75' : '') + '">' +
             '<div class="between" style="align-items:flex-start"><div class="h sm">' + esc(i.title) + '</div><span class="muted">' + i.at + '</span></div>' +
             '<div class="chips" style="margin:6px 0">' +
               '<span class="chip ' + LEVEL_CHIP[i.level] + '">' + i.level + '</span>' +
-              '<span class="chip ' + (i.status === '已解決' ? 'teal' : i.status === '處理中' ? 'amber' : 'gray') + '">' + i.status + '</span>' +
-              (i.converted ? '<span class="chip teal">已轉給屋主確認</span>' : '') +
+              '<span class="chip ' + (i.status === '已解決' ? 'brand' : i.status === '處理中' ? 'amber' : 'gray') + '">' + i.status + '</span>' +
+              (i.converted ? '<span class="chip brand">已轉給屋主確認</span>' : '') +
             '</div>' +
             (i.detail ? '<div class="body">' + esc(i.detail) + '</div>' : '') +
             acts +
@@ -813,7 +828,7 @@ textarea.sm{min-height:120px;padding:12px}
           '<div class="quote"><b>' + esc(i.title) + '</b><br>' + esc(i.detail) + '</div>' +
         '</div>' +
         '<div class="card hl" style="padding:14px 16px">' +
-          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;color:var(--teal-d)" class="h sm">' + I.eye + '<span>給屋主看的說法</span></div>' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;color:var(--brand-d)" class="h sm">' + I.eye + '<span>給屋主看的說法</span></div>' +
           '<label for="cvTitle" class="lbl">標題</label>' +
           '<input id="cvTitle" class="txt full" data-input="cvTitle" data-live="1" value="' + esc(S.cvTitle) + '" placeholder="用屋主聽得懂的話寫" autocomplete="off">' +
           '<label for="cvNote" class="lbl" style="margin-top:12px">說明</label>' +
@@ -823,7 +838,7 @@ textarea.sm{min-height:120px;padding:12px}
           '<div class="muted" style="margin-top:12px">屋主會看到兩個選項：「同意施作」「想先跟設計師討論」</div>' +
         '</div>' +
       '</div>' +
-      '<div class="footer"><button class="btn teal" data-act="sendConvert" id="sendConvert" aria-disabled="' + !ready + '">送出給屋主確認</button></div>' +
+      '<div class="footer"><button class="btn brand" data-act="sendConvert" id="sendConvert" aria-disabled="' + !ready + '">送出給屋主確認</button></div>' +
     '</div>';
   }
 
@@ -832,7 +847,7 @@ textarea.sm{min-height:120px;padding:12px}
     return '<div class="screen">' +
       navbar('go', 'home', '返回案場', '內部細項進度表', 'Excel 匯入的完整工項 · 只有工作室看得到') +
       '<div class="scroll" data-scroll="d-sched">' +
-        '<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip lg teal">已完成 ' + COUNT.done + '</span><span class="chip lg amber">施工中 ' + COUNT.doing + '</span><span class="chip lg gray">未開始 ' + COUNT.todo + '</span></div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip lg brand">已完成 ' + COUNT.done + '</span><span class="chip lg amber">施工中 ' + COUNT.doing + '</span><span class="chip lg gray">未開始 ' + COUNT.todo + '</span></div>' +
         '<div class="card" style="padding:14px 16px">' +
           '<div class="between" style="margin-bottom:10px"><div class="h">細項工程</div><div class="muted" style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:12px;background:var(--amber)"></span>今天</div></div>' +
           '<button class="btn sm line" style="margin-bottom:10px" data-act="done" aria-expanded="' + !!S.showDone + '">' + (S.showDone ? '收合已完成的 ' : '顯示已完成的 ') + COUNT.done + ' 項</button>' +
@@ -852,7 +867,7 @@ textarea.sm{min-height:120px;padding:12px}
     var invalid = planInvalid();
     function opts(map, cur) { return Object.keys(map).map(function (k) { return '<option value="' + k + '"' + (k === cur ? ' selected' : '') + '>' + (map[k].label || map[k]) + '</option>'; }).join(''); }
     return '<div class="screen">' +
-      navbar('go', 'home', '返回案場', '現場工期調整', '屋主看的大工種時刻表', dirty ? '<span class="chip amber">未更新</span>' : '<span class="chip teal">已是最新</span>') +
+      navbar('go', 'home', '返回案場', '現場工期調整', '屋主看的大工種時刻表', dirty ? '<span class="chip amber">未更新</span>' : '<span class="chip brand">已是最新</span>') +
       '<div class="scroll" data-scroll="d-plan">' +
         '<div class="tip">' + I.eye + '<span>這份就是屋主在「進度」分頁看到的工程時刻表。日期跟原定不同時，變更的天數會用紅色標給屋主看。改完按「更新給屋主」才會生效；上次更新：' + esc(S.planPubAt) + '</span></div>' +
         S.plan.map(function (r) {
@@ -879,7 +894,7 @@ textarea.sm{min-height:120px;padding:12px}
         '<button class="btn sm line" data-act="planAdd">＋ 新增一列</button>' +
       '</div>' +
       '<div class="footer">' + (invalid ? '<div class="muted" style="color:var(--amber-d);margin-bottom:8px;text-align:center">有欄位要修正才能更新</div>' : '') +
-        '<button class="btn teal" data-act="planPub" aria-disabled="' + (invalid || !dirty) + '">' + (dirty ? '更新給屋主' : '屋主看到的已是最新版本') + '</button></div>' +
+        '<button class="btn brand" data-act="planPub" aria-disabled="' + (invalid || !dirty) + '">' + (dirty ? '更新給屋主' : '屋主看到的已是最新版本') + '</button></div>' +
     '</div>';
   }
 
@@ -979,17 +994,17 @@ textarea.sm{min-height:120px;padding:12px}
     var confirmCard = '';
     if (oc.length || dc.length) {
       confirmCard = '<div class="card' + (oc.length ? ' warn' : '') + '">' +
-        '<div class="between" style="margin-bottom:4px"><div class="h">' + (oc.length ? '需要您確認（' + oc.length + '）' : '待確認事項') + '</div>' + (oc.length ? '' : '<span class="chip teal">都已確認</span>') + '</div>' +
+        '<div class="between" style="margin-bottom:4px"><div class="h">' + (oc.length ? '需要您確認（' + oc.length + '）' : '待確認事項') + '</div>' + (oc.length ? '' : '<span class="chip brand">都已確認</span>') + '</div>' +
         oc.map(function (c) {
           var d = dueInfo(c);
           return '<div class="row"><div class="li" style="padding:0;font-weight:500">' + esc(c.title) + '</div>' +
             '<div class="muted" style="margin-top:2px">請在 ' + d.date + ' 前確認 · <b style="color:' + (d.left <= 7 ? 'var(--red-d)' : 'var(--amber-d)') + '">還剩 ' + d.left + ' 天</b></div>' +
-            '<button class="btn sm teal" style="margin-top:8px" data-act="copen" data-arg="' + c.id + '">去確認</button></div>';
+            '<button class="btn sm brand" style="margin-top:8px" data-act="copen" data-arg="' + c.id + '">去確認</button></div>';
         }).join('') +
         (dc.length ? '<div class="muted" style="margin-top:' + (oc.length ? '10' : '4') + 'px">已確認 ' + dc.length + ' 項：' + dc.map(function (c) { return esc(c.title); }).join('、') + '</div>' : '') +
       '</div>';
     }
-    return '<div class="body" style="font-size:14px">屋主您好，這是您家目前的施工進度。</div>' +
+    return '<div class="body" style="font-size:14px">屋主您好，這是本處設計為您記錄的施工進度。</div>' +
       confirmCard +
       '<div class="card">' +
         '<div style="display:flex;align-items:baseline;gap:8px"><span class="big">' + PCT + '%</span><span class="muted" style="font-size:13px">整體進度（依工期）</span></div>' +
@@ -997,11 +1012,11 @@ textarea.sm{min-height:120px;padding:12px}
         '<div class="between muted" style="margin-top:8px"><span>開工 114/08/20</span><span>預計完工 115/02/09</span></div>' +
       '</div>' +
       '<div class="card' + (top.today ? ' hl' : '') + '">' +
-        '<div class="between" style="margin-bottom:8px"><div class="h">最新動態</div><span class="muted">' + (top.today ? '<span class="chip teal" style="margin-right:6px">今天</span>' : '') + top.date + '</span></div>' +
+        '<div class="between" style="margin-bottom:8px"><div class="h">最新動態</div><span class="muted">' + (top.today ? '<span class="chip brand" style="margin-right:6px">今天</span>' : '') + top.date + '</span></div>' +
         workBlock(top.work) +
         top.entries.slice(0, 2).map(function (t) { return '<div class="li">· ' + esc(t) + '</div>'; }).join('') +
         (top.photos.length || more ? '<div class="muted" style="margin-top:6px">' + (top.photos.length ? top.photos.length + ' 張現場照片' + more : more.slice(1)) + '</div>' : '') +
-        '<button class="btn sm line-teal" style="margin-top:10px" data-act="tab" data-arg="log">看工程日誌</button>' +
+        '<button class="btn sm line-brand" style="margin-top:10px" data-act="tab" data-arg="log">看工程日誌</button>' +
       '</div>' +
       planBrief();
   }
@@ -1017,7 +1032,7 @@ textarea.sm{min-height:120px;padding:12px}
       '</div>' +
       '<div class="card"><div class="h" style="margin-bottom:6px">接下來</div>' +
         next.map(function (r) { return item(r, 'var(--bar-todo)'); }).join('') +
-        '<button class="btn sm line-teal" style="margin-top:8px" data-act="tab" data-arg="timeline">看完整工程時刻表</button>' +
+        '<button class="btn sm line-brand" style="margin-top:8px" data-act="tab" data-arg="timeline">看完整工程時刻表</button>' +
       '</div>';
   }
 
@@ -1036,7 +1051,7 @@ textarea.sm{min-height:120px;padding:12px}
       '<div class="stack" role="group" aria-labelledby="optlbl">' + c.options.map(function (o, idx) {
         return '<button class="opt" data-act="cpick" data-arg="' + idx + '" aria-pressed="' + (S.cPick === idx) + '"><span class="radio"></span><span>' + esc(o) + '</span></button>';
       }).join('') + '</div>' +
-      '<button class="btn teal" data-act="cdone" aria-disabled="' + !ready + '">確認送出</button>' +
+      '<button class="btn brand" data-act="cdone" aria-disabled="' + !ready + '">確認送出</button>' +
       '<div class="muted">送出後設計師會收到通知，系統會留下確認時間。</div>';
   }
 
@@ -1063,7 +1078,7 @@ textarea.sm{min-height:120px;padding:12px}
         legend + monthGrid(S.cMonth, plan) +
         '<div class="muted">左右滑動看整個月；橘框是今天</div>';
     }
-    return '<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip lg teal">已完成 ' + cnt.done + '</span><span class="chip lg amber">施工中 ' + cnt.doing + '</span><span class="chip lg gray">未開始 ' + cnt.todo + '</span></div>' +
+    return '<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip lg brand">已完成 ' + cnt.done + '</span><span class="chip lg amber">施工中 ' + cnt.doing + '</span><span class="chip lg gray">未開始 ' + cnt.todo + '</span></div>' +
       '<div class="between"><div class="h" style="font-size:17px">工程時刻表</div><span class="muted">更新：' + esc(S.planPubAt) + '</span></div>' +
       '<div class="seg" role="group" aria-label="顯示方式"><button data-act="pview" data-arg="grid" aria-pressed="' + (S.cPlanView !== 'list') + '">月曆</button><button data-act="pview" data-arg="list" aria-pressed="' + (S.cPlanView === 'list') + '">清單</button></div>' +
       body;
@@ -1082,7 +1097,7 @@ textarea.sm{min-height:120px;padding:12px}
     var head2 = '<tr><th class="nm">星期</th>' + cols.map(function (c) { return '<th class="' + (c.we ? 'we' : '') + (c.today ? ' today' : '') + '">' + WK[c.dow] + '</th>'; }).join('') + '</tr>';
     var rows = plan.map(function (r) {
       var a = isoT(r.start), b = isoT(r.end);
-      var dot = '<span style="display:inline-block;width:6px;height:6px;border-radius:3px;margin-right:4px;vertical-align:1px;background:' + (r.status === 'done' ? 'var(--teal)' : r.status === 'doing' ? 'var(--amber)' : 'var(--bar-todo)') + '"></span>';
+      var dot = '<span style="display:inline-block;width:6px;height:6px;border-radius:3px;margin-right:4px;vertical-align:1px;background:' + (r.status === 'done' ? 'var(--brand)' : r.status === 'doing' ? 'var(--amber)' : 'var(--bar-todo)') + '"></span>';
       var chg = planChanged(r);
       return '<tr><th class="nm' + (chg ? ' chg' : '') + '" scope="row" title="' + esc(r.name) + (chg ? '（' + planChangeText(r) + '）' : '') + '">' + dot + esc(r.name) + (chg ? '<span class="sr-only">（現場調整：' + planChangeText(r) + '）</span>' : '') + '</th>' + cols.map(function (c) {
         var off = c.we && (r.type === 'work' || r.type === 'measure');
@@ -1100,7 +1115,7 @@ textarea.sm{min-height:120px;padding:12px}
     return '<div class="muted" style="font-size:13px">設計師每天整理的現場紀錄</div>' +
       feed().map(function (f) {
         return '<div class="card' + (f.today ? ' hl' : '') + '">' +
-          '<div class="between"><div class="h">' + f.date + '</div>' + (f.today ? '<span class="chip teal">今天</span>' : '') + '</div>' +
+          '<div class="between"><div class="h">' + f.date + '</div>' + (f.today ? '<span class="chip brand">今天</span>' : '') + '</div>' +
           workBlock(f.work) +
           f.entries.map(function (t) { return '<div class="li">· ' + esc(t) + '</div>'; }).join('') +
           (f.photos.length ? '<div class="grid3" style="gap:6px;margin-top:10px">' + f.photos.map(function (p) { return photoSmall(p); }).join('') + '</div>' : '') +
@@ -1117,7 +1132,7 @@ textarea.sm{min-height:120px;padding:12px}
 
   function toastHtml(t) {
     if (!t) return '';
-    return '<button class="toast' + (isFresh() ? ' fresh' : '') + '" data-act="' + (t.inApp ? 'dtoast' : 'toast') + '"><span class="ic' + (t.inApp ? ' in' : '') + '">' + I.bell + '</span><span class="tx"><span class="muted">' + (t.inApp ? '工程日誌 · 通知' : 'LINE · [工作室名稱]') + '</span><span style="font-size:14px;font-weight:500">' + esc(t.text) + '</span></span></button>';
+    return '<button class="toast' + (isFresh() ? ' fresh' : '') + '" data-act="' + (t.inApp ? 'dtoast' : 'toast') + '"><span class="ic' + (t.inApp ? ' in' : '') + '">' + I.bell + '</span><span class="tx"><span class="muted">' + (t.inApp ? '本處設計 · 通知' : 'LINE · 本處設計') + '</span><span style="font-size:14px;font-weight:500">' + esc(t.text) + '</span></span></button>';
   }
 
   function clientApp() {
@@ -1129,8 +1144,8 @@ textarea.sm{min-height:120px;padding:12px}
       return '<button class="tab" data-act="tab" data-arg="' + t[0] + '"' + (S.cTab === t[0] ? ' aria-current="page"' : '') + '>' + tabIcon(t[2]) + '<span>' + t[1] + '</span></button>';
     }).join('');
     return '<div class="screen">' +
-      '<div class="appbar client"><div class="eyebrow">[工作室名稱] · 工程進度</div><div class="title">示範案場</div></div>' +
-      '<div class="scroll" data-scroll="' + key + '">' + body + '</div>' +
+      brandBar('工程進度') + '<div class="appbar client"><div class="title">示範案場</div></div>' +
+      '<div class="scroll" data-scroll="' + key + '">' + body + brandFoot() + '</div>' +
       '<nav class="tabbar" aria-label="屋主端分頁">' + tabs + '</nav>' +
     '</div>' + toastHtml(S.toast);
   }
@@ -1149,7 +1164,7 @@ textarea.sm{min-height:120px;padding:12px}
     var dBadge = S.designerNew && S.view !== 'designer';
     var snackOn = S.snack && S.view !== S.snack.to;
     app.innerHTML =
-      '<header class="topbar"><div><h1>工程日誌 · 試用原型</h1><p>範例：示範案場 · 範例日期 114/10/30（四）</p></div>' +
+      '<header class="topbar"><div class="who"><img src="assets/mark.png" alt=""><div><h1>本處設計 · 工程日誌</h1><p>試用原型 · 114/10/30（四）</p></div></div>' +
         '<button class="reset" data-act="reset">重設示範</button></header>' +
       '<nav class="switch" aria-label="切換視角">' +
         '<button class="sw" data-act="view" data-arg="designer" aria-pressed="' + (S.view === 'designer') + '">設計師端' + (dBadge ? '<span class="new">新通知</span>' : '') + '</button>' +

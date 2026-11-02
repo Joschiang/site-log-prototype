@@ -18,7 +18,7 @@
   --line:#E1E5EA;--line2:#EDF0F3;--bg:#F5F7F9;--page:#E8EBEE;
   --teal:#0F6E6E;--teal-d:#0A5050;--teal-l:#DDF0EE;--teal-xl:#E3EEF0;
   --amber:#B45309;--amber-d:#8A3F06;--amber-l:#FCEBD9;
-  --red-d:#9B1C22;--red-l:#FBE3E4;
+  --red:#D13A3F;--red-d:#9B1C22;--red-l:#FBE3E4;
   --gray-l:#EEF1F4;--gray-b:#C9D0D7;--bar-todo:#A9B3BD;
 }
 *{box-sizing:border-box}
@@ -96,13 +96,23 @@ button{font:inherit;color:inherit;cursor:pointer}
 .hint{min-height:36px;padding:4px 12px;border:1px dashed var(--teal);border-radius:18px;background:#fff;color:var(--teal-d);font-size:12px;text-align:left}
 .work{padding:10px 12px;border-radius:10px;background:var(--gray-l);margin:6px 0 8px}
 .work .w{font-size:13px;line-height:1.6;color:var(--ink)}
-.gc-day{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line2)}
-.gc-day:first-child{border-top:none}
-.gc-date{width:64px;flex-shrink:0;font-size:12px;font-weight:700;color:var(--ink2);padding-top:8px}
-.gc-evs{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
-.gc-ev{border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;font-weight:500;line-height:1.4}
-.gc-ev .s{display:block;font-size:11px;font-weight:400;opacity:.9}
-.gc-dot{display:inline-block;width:10px;height:10px;border-radius:5px;flex-shrink:0}
+.tline{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0 0;font-size:13px;line-height:1.5}
+.picker{margin-top:10px;padding:12px;border:2px solid var(--teal);border-radius:12px;background:var(--teal-xl)}
+.del{width:36px;height:40px;flex-shrink:0;border:none;border-radius:10px;background:transparent;color:var(--muted);font-size:18px}
+.mc-head{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-bottom:1px solid var(--line)}
+.mc-head span{padding:8px 0;text-align:center;font-size:11px;color:var(--muted)}
+.mc-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-bottom:1px solid var(--line2)}
+.mc-week:last-child{border-bottom:none}
+.mc-day{grid-row:1/-1;display:flex;justify-content:center;align-items:flex-start;min-width:0;padding:3px 0 0;border:none;border-left:1px solid var(--line2);background:transparent;font-size:12px;color:var(--ink)}
+.mc-day:first-child{border-left:none}
+.mc-day b{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:12px;font-weight:500}
+.mc-day.out{background:var(--bg);color:var(--bar-todo)}
+.mc-day[aria-pressed="true"]{background:var(--teal-l)}
+.mc-day.today b{background:var(--teal);color:#fff;font-weight:700}
+.mc-bar{height:17px;line-height:17px;padding:0 4px;overflow:hidden;white-space:nowrap;color:#fff;font-size:11px;font-weight:500;pointer-events:none}
+.mc-bar.s{margin-left:2px;border-top-left-radius:4px;border-bottom-left-radius:4px}
+.mc-bar.e{margin-right:2px;border-top-right-radius:4px;border-bottom-right-radius:4px}
+.site-dot{display:inline-block;width:10px;height:10px;border-radius:5px;flex-shrink:0}
 .mem{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line2);flex-wrap:wrap}
 .mem:first-of-type{border-top:none}
 .mem .nm{flex:1;min-width:110px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px}
@@ -137,7 +147,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 [aria-pressed="true"] .track i{left:23px}
 textarea{width:100%;min-height:440px;padding:14px;border:1px solid var(--gray-b);border-radius:12px;font:inherit;font-size:16px;line-height:1.7;resize:vertical;color:var(--ink);background:#fff}
 textarea.sm{min-height:120px;padding:12px}
-.pre{white-space:pre-line;font-size:13px;line-height:1.7}
 .opt{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:10px 14px;border:1px solid var(--gray-b);border-radius:12px;background:#fff;text-align:left;font-size:14px}
 .opt[aria-pressed="true"]{border:2px solid var(--teal);background:var(--teal-xl)}
 .radio{width:20px;height:20px;border-radius:10px;border:2px solid var(--gray-b);flex-shrink:0;background:#fff}
@@ -165,6 +174,11 @@ textarea.sm{min-height:120px;padding:12px}
 .cal .we{background:#D5DAE0}
 .cal th.good{background:#D9A3A0;color:#3B1513}
 .cal .today{box-shadow:inset 0 0 0 2px var(--amber)}
+.cal td.was{background:repeating-linear-gradient(135deg,#fff 0 3px,#F2B8BA 3px 5px)}
+.cal th.nm.chg{color:var(--red-d);font-weight:700}
+.legend i.was{background:repeating-linear-gradient(135deg,#fff 0 3px,#F2B8BA 3px 5px);box-shadow:inset 0 0 0 1px #F2B8BA}
+.date.chg{border-color:var(--red);color:var(--red-d)}
+.chg-note{margin-top:8px;font-size:12px;line-height:1.5;color:var(--red-d)}
 .date{flex:1;min-width:0;height:44px;padding:0 8px;border:1px solid var(--gray-b);border-radius:10px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
 .mini{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}
 .fld{flex:1;min-width:0}
@@ -286,7 +300,6 @@ textarea.sm{min-height:120px;padding:12px}
   function rowByName(n) { for (var i = 0; i < ROWS.length; i++) if (ROWS[i].name === n) return ROWS[i]; return null; }
   var DOING = ROWS.filter(function (r) { return r.st === 'doing'; });
   var UPCOMING = ROWS.filter(function (r) { return r.start > TODAY; });
-  var NEXT_WEEK = ROWS.filter(function (r) { return r.start >= D('11/03') && r.start <= D('11/09'); });
   var COUNT = { done: 0, doing: 0, todo: 0 };
   ROWS.forEach(function (r) { COUNT[r.st]++; });
   var ST_LABEL = { done: '完成', doing: '施工中', todo: '未開始' };
@@ -318,9 +331,9 @@ textarea.sm{min-height:120px;padding:12px}
     { id: 3, name: '鋁窗丈量', type: 'measure', start: '2025-09-01', end: '2025-09-01', status: 'done' },
     { id: 4, name: '水電工程／空調工程', type: 'work', start: '2025-09-08', end: '2025-09-21', status: 'done' },
     { id: 5, name: '泥作／防水工程', type: 'work', start: '2025-09-22', end: '2025-10-12', status: 'done' },
-    { id: 6, name: '泥作／磁磚', type: 'work', start: '2025-10-13', end: '2025-10-31', status: 'doing' },
+    { id: 6, name: '泥作／磁磚', type: 'work', start: '2025-10-13', end: '2025-10-31', status: 'doing', origEnd: '2025-10-27' },
     { id: 7, name: '木作工程', type: 'work', start: '2025-10-27', end: '2025-12-27', status: 'doing' },
-    { id: 8, name: '鋁窗安裝', type: 'work', start: '2025-11-20', end: '2025-11-21', status: 'todo' },
+    { id: 8, name: '鋁窗安裝', type: 'work', start: '2025-11-20', end: '2025-11-21', status: 'todo', origStart: '2025-11-13', origEnd: '2025-11-14' },
     { id: 9, name: '油漆／塗料', type: 'work', start: '2025-12-22', end: '2026-01-25', status: 'todo' },
     { id: 10, name: '石材丈量', type: 'measure', start: '2025-12-29', end: '2025-12-29', status: 'todo' },
     { id: 11, name: '空調收尾', type: 'work', start: '2026-01-26', end: '2026-01-30', status: 'todo' },
@@ -332,6 +345,8 @@ textarea.sm{min-height:120px;padding:12px}
     { id: 17, name: '預留時間', type: 'buffer', start: '2026-02-12', end: '2026-02-12', status: 'todo' },
     { id: 18, name: '交屋', type: 'handover', start: '2026-02-13', end: '2026-02-13', status: 'todo' }
   ];
+  // 原定日期＝案場用 Excel 成立時那一版，之後不再變動；例外才標在上面，其餘原定就是目前的日期
+  PLAN.forEach(function (r) { r.origStart = r.origStart || r.start; r.origEnd = r.origEnd || r.end; });
   var GOOD_DAYS = ['2025-08-20', '2025-10-06', '2025-11-10', '2026-02-13'];
   var PLAN_TYPES = { work: { label: '工程中', color: '#EDB98A' }, measure: { label: '丈量', color: '#BFDCE6' }, buffer: { label: '預留時間', color: '#F3DCC8' }, handover: { label: '交屋', color: '#A99BCB' } };
   var PLAN_STATUS = { todo: '未開始', doing: '施工中', done: '已完成' };
@@ -339,6 +354,14 @@ textarea.sm{min-height:120px;padding:12px}
   function isoT(s) { var p = s.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
   function isoOf(t) { var x = new Date(t); return x.getUTCFullYear() + '-' + pad(x.getUTCMonth() + 1) + '-' + pad(x.getUTCDate()); }
   function planRange(r) { var a = isoT(r.start), b = isoT(r.end); return md(a) + (a === b ? '' : ' – ' + md(b)); }
+  function planChanged(r) { return !r.origStart || r.start !== r.origStart || r.end !== r.origEnd; }
+  function planInOrig(r, t) { return !!r.origStart && t >= isoT(r.origStart) && t <= isoT(r.origEnd); }
+  function planChangeText(r) {
+    if (!r.origStart) return '現場新增，原定沒有這一項';
+    var orig = planRange({ start: r.origStart, end: r.origEnd });
+    var diff = r.start && r.end ? Math.round((isoT(r.end) - isoT(r.origEnd)) / DAY) : 0;
+    return '原定 ' + orig + (diff > 0 ? '，延後 ' + diff + ' 天' : diff < 0 ? '，提前 ' + (-diff) + ' 天' : '');
+  }
   function planSorted(list) { return list.slice().sort(function (a, b) { return isoT(a.start) - isoT(b.start) || a.id - b.id; }); }
 
   // 「今天做什麼」的建議：內部進度表上該工種施工中的項目＋之前寫過的
@@ -347,8 +370,10 @@ textarea.sm{min-height:120px;padding:12px}
     '泥作': ['門框崁縫填實', '浴室門框收邊修補'],
     '鋁窗': ['鋁門窗複量＋下定']
   };
-  // Google 日曆示意：其他兩個案場（虛構）只用來看多案場、多顏色的樣子
-  var GC_SITES = [
+  // 打「工種開頭」的工程內容時，用來認出工種（沒認出來才請設計師選）
+  var KNOWN_TRADES = TRADE_ORDER.concat(['拆除', '保護', '系統櫃', '玻璃', '石材', '地板', '清潔', '軟裝', '燈具', '衛浴', '窗簾', '金屬']);
+  // 案場月曆：其他兩個案場（虛構）只用來看多案場、多顏色的樣子
+  var CAL_SITES = [
     { id: 'a', name: '示範案場', color: '#0F6E6E' },
     { id: 'b', name: '示範案場 B', color: '#6B4FA0', plan: [
       { name: '泥作／防水工程', type: 'work', start: '2025-10-06', end: '2025-10-24' },
@@ -364,21 +389,19 @@ textarea.sm{min-height:120px;padding:12px}
       { name: '交屋', type: 'handover', start: '2026-02-27', end: '2026-02-27' }
     ] }
   ];
-  var GC_PEOPLE = { admin: '專案管理者', A: '設計師 A', B: '設計師 B' };
-  var GC_MONTHS = ['2025-10', '2025-11', '2025-12', '2026-01', '2026-02'];
+  var CAL_PEOPLE = { admin: '專案管理者', A: '設計師 A', B: '設計師 B' };
 
-  var TODOS = ['泥作修補浴室收邊（10/31）', '跟水電約主臥插座修正時間'];
   var NOTE = '鄰居反映午休時段噪音，已向管委會報備，13:00 前不做切割。';
-  var REPORT = '★每週工程匯報\n▫114/10/27（一）～114/11/02（日）\n\n▫本週進度：\n10/27（一）磁磚保護\n10/27（一）～10/31（五）訂製門及窗框安裝、泥作崁縫填實\n10/27（一）～11/02（日）隔間雙面封板（隔音棉、隔熱棉）\n10/30（四）鋁門窗複量完成並下定\n\n▫下週進度：\n11/03（一）～11/16（日）天花板角材施作\n11/05（三）燈具位置及冷氣檢修口放樣\n\n謝謝您\n\nHave a great weekend!';
   var LEVEL_CHIP = { '一般': 'gray', '影響工期': 'amber', '影響費用': 'red' };
   var STATUS_NEXT = { '回報': '處理中', '處理中': '已解決' };
 
   function initState() {
     return {
       view: 'designer', dScreen: 'home', cTab: 'home', draft: '', notify: true,
-      snapshot: null, reportSent: false, sentReport: '', toast: null, dToast: null, snack: null,
+      snapshot: null, toast: null, dToast: null, snack: null,
       clientNew: false, designerNew: false, showDone: false, nextId: 5,
       dAlbum: null, cAlbum: null, cConfirm: null, cPick: null,
+      pendingEntry: null, linkNote: null,
       issueDraft: '', issueLevel: '一般', convertId: null, cvTitle: '', cvNote: '', cvDue: '',
       trades: [{ id: 'w', name: '木作', n: 2, work: '隔間雙面封板（隔音棉、隔熱棉）' }, { id: 'm', name: '泥作', n: 1, work: '門框崁縫填實' }, { id: 'a', name: '鋁窗', n: 1, work: '' }],
       entries: [
@@ -410,13 +433,12 @@ textarea.sm{min-height:120px;padding:12px}
       nextConfirm: 4, nextIssue: 5,
       plan: JSON.parse(JSON.stringify(PLAN)), planPub: JSON.parse(JSON.stringify(PLAN)), planPubAt: '114/10/27（一）09:30', nextPlan: 19,
       cMonth: '2025-10', cPlanView: 'grid',
-      gcAs: 'admin', gcMonth: '2025-11', gcMembers: { a: ['A'], b: ['A', 'B'], c: ['B'] },
-      report: REPORT
+      calAs: 'admin', calMonth: '2025-10', calDay: TODAY, calMembers: { a: ['A'], b: ['A', 'B'], c: ['B'] }
     };
   }
 
   // ---------- 狀態（存在這台裝置的瀏覽器，重整不會消失） ----------
-  var KEY = 'site-log-proto-v4';
+  var KEY = 'site-log-proto-v5';
   var S;
   try { S = JSON.parse(localStorage.getItem(KEY)) || initState(); } catch (e) { S = initState(); }
   S.snack = null; // 提示列只在當下出現，重整後不再跳出
@@ -430,15 +452,53 @@ textarea.sm{min-height:120px;padding:12px}
 
   // ---------- 小工具 ----------
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function tradesWork(trades) { return trades.filter(function (t) { return t.n > 0; }).map(function (t) { return t.name + '（' + t.n + ' 人）' + (t.work && t.work.trim() ? '：' + t.work.trim() : ''); }); }
+  // 從工程內容連動過來的「今天做什麼」：跟著該條工程內容的公開設定走，內部的字不會外流
+  function tradeLines(t) { return S.entries.filter(function (e) { return e.trade === t.name && e.work; }); }
+  function tradesWork() {
+    var list = [];
+    S.trades.forEach(function (t) {
+      if (t.n <= 0) return;
+      var manual = (t.work || '').trim();
+      var pub = tradeLines(t).filter(function (e) { return e.pub; }).map(function (e) { return e.work; });
+      if (t.auto && !manual && !pub.length) return;
+      var w = (manual ? [manual] : []).concat(pub).join('、');
+      list.push(t.name + '（' + t.n + ' 人）' + (w ? '：' + w : ''));
+    });
+    return list;
+  }
+  function shownInWork(e) {
+    if (!e.trade || !e.work) return false;
+    return S.trades.some(function (t) { return t.name === e.trade && t.n > 0; });
+  }
+  // 「水電：主臥插座修正」或「木作天花封板」→ 工種＋內容；認不出來回傳 null，請設計師選
+  function parseEntry(text) {
+    var m = text.match(/^([^：:，,、\s]{1,6})\s*[：:]\s*(.+)$/);
+    if (m) return { trade: m[1], work: m[2] };
+    var names = S.trades.map(function (t) { return t.name; }).concat(KNOWN_TRADES);
+    for (var i = 0; i < names.length; i++) {
+      if (text.indexOf(names[i]) === 0) return { trade: names[i], work: text.slice(names[i].length).replace(/^[\s，,、]+/, '') };
+    }
+    return null;
+  }
+  function entryPatch(text, trade, work) {
+    var patch = { draft: '', pendingEntry: null, linkNote: null, nextId: S.nextId + 1,
+      entries: S.entries.concat([{ id: S.nextId, text: text, pub: false, added: true, trade: trade || null, work: trade ? work : null }]) };
+    if (!trade) return patch;
+    var has = S.trades.filter(function (t) { return t.name === trade; })[0];
+    patch.trades = has
+      ? S.trades.map(function (t) { return t === has && t.n === 0 ? Object.assign({}, t, { n: 1 }) : t; })
+      : S.trades.concat([{ id: 't' + S.nextId, name: trade, n: 1, work: '', auto: true }]);
+    patch.linkNote = '已連動到上方「' + trade + '」工種，照片也可以歸進「' + trade + '」相簿';
+    return patch;
+  }
   function workBlock(lines) {
     if (!lines || !lines.length) return '';
     return '<div class="work"><div class="mini">今日施作</div>' + lines.map(function (w) { return '<div class="w">' + esc(w) + '</div>'; }).join('') + '</div>';
   }
   function currentPublic() {
     return {
-      work: tradesWork(S.trades),
-      entries: S.entries.filter(function (e) { return e.pub; }).map(function (e) { return e.text; }),
+      work: tradesWork(),
+      entries: S.entries.filter(function (e) { return e.pub && !shownInWork(e); }).map(function (e) { return e.text; }),
       photos: S.photos.filter(function (p) { return p.pub; }).map(function (p) { return { label: p.label, tone: p.tone, trade: p.trade }; })
     };
   }
@@ -533,7 +593,7 @@ textarea.sm{min-height:120px;padding:12px}
     var btn = '寫今日日誌';
     if (S.snapshot && !dirty) {
       chip = '<span class="chip teal">已發布</span>';
-      hint = '屋主看得到 ' + S.snapshot.entries.length + ' 條內容、' + S.snapshot.photos.length + ' 張照片。';
+      hint = '屋主看得到 ' + S.entries.filter(function (e) { return e.pub; }).length + ' 條內容、' + S.snapshot.photos.length + ' 張照片。';
       btn = '查看／修改日誌';
     } else if (dirty) {
       chip = '<span class="chip amber">有未發布的修改</span>';
@@ -576,31 +636,34 @@ textarea.sm{min-height:120px;padding:12px}
           }).join('') +
         '</div>' +
         '<div class="card stack">' +
-          '<div class="between"><div class="h">本週工程匯報</div><span class="chip ' + (S.reportSent ? 'teal">已發送' : 'amber">草稿') + '</span></div>' +
-          '<div class="body">114/10/27（一）～ 114/11/02（日）· 系統已依進度表產生草稿</div>' +
-          '<button class="btn sm line" data-act="go" data-arg="report">查看週報</button>' +
+          '<div class="between"><div class="h">進度表</div>' + (planDirty() ? '<span class="chip amber">有修改還沒更新給屋主</span>' : '<span class="chip gray">內外分開</span>') + '</div>' +
+          '<div class="body">內部看細項工程；屋主只看大工種的工程時刻表。現場工期有變動就在「現場工期調整」改，變更的天數會用紅色標給屋主看。</div>' +
+          '<div class="btns" style="margin-top:0"><button class="btn sm line" data-act="go" data-arg="sched">內部細項</button><button class="btn sm line-teal" data-act="go" data-arg="plan">現場工期調整</button></div>' +
         '</div>' +
         '<div class="card stack">' +
-          '<div class="between"><div class="h">進度表</div>' + (planDirty() ? '<span class="chip amber">屋主版有未更新的修改</span>' : '<span class="chip gray">內外分開</span>') + '</div>' +
-          '<div class="body">內部看細項工程；屋主只看大工種的工程時刻表，兩份分開排。</div>' +
-          '<div class="btns" style="margin-top:0"><button class="btn sm line" data-act="go" data-arg="sched">內部細項</button><button class="btn sm line-teal" data-act="go" data-arg="plan">屋主版時刻表</button></div>' +
-        '</div>' +
-        '<div class="card stack">' +
-          '<div class="between"><div class="h">Google 日曆</div><span class="chip gray">示意</span></div>' +
-          '<div class="body">所有案場疊在同一個 Google 日曆，一個案場一個顏色。只放屋主版的大工種和交屋；日曆只看，修改都在系統裡。</div>' +
-          '<button class="btn sm line" data-act="go" data-arg="gcal">預覽日曆與權限</button>' +
+          '<div class="between"><div class="h">案場月曆</div><span class="chip gray">僅內部</span></div>' +
+          '<div class="body">負責的案場排在同一個月曆，一個案場一個顏色。只放大工種和交屋，點日期看當天有哪些工程。</div>' +
+          '<button class="btn sm line" data-act="go" data-arg="cal">打開月曆</button>' +
         '</div>' +
         '<div class="card stack">' +
           '<div class="between"><div class="h">內部相簿</div><span class="chip gray">依工種</span></div>' +
           '<div class="body">全部照片都在這裡，包含沒公開的。封板、貼磚前的管線和防水照片，保固時直接找。</div>' +
           '<button class="btn sm line" data-act="go" data-arg="albums">打開相簿</button>' +
         '</div>' +
-        '<div class="card">' +
-          '<div class="between" style="margin-bottom:8px"><div class="h">待辦事項</div><span class="chip gray">僅內部</span></div>' +
-          TODOS.map(function (t) { return '<div class="body" style="padding:3px 0">· ' + esc(t) + '</div>'; }).join('') +
-        '</div>' +
       '</div>' +
     '</div>';
+  }
+
+  // 打的內容認不出工種時，當場問一次
+  function entryPicker() {
+    var names = S.trades.map(function (t) { return t.name; });
+    TRADE_ORDER.forEach(function (n) { if (names.indexOf(n) < 0) names.push(n); });
+    return '<div class="picker"><div class="h sm">這條屬於哪個工種？</div>' +
+      '<div class="body" style="margin-top:2px">' + esc(S.pendingEntry) + '</div>' +
+      '<div class="hints" style="margin-top:8px">' + names.map(function (n) { return '<button class="hint" style="background:#fff" data-act="pickTrade" data-arg="' + esc(n) + '">' + esc(n) + '</button>'; }).join('') + '</div>' +
+      '<form class="input-row" data-form="pendingTrade"><label for="pendingTrade" class="sr-only">其他工種</label>' +
+        '<input id="pendingTrade" class="txt" placeholder="其他工種，例如：石材" autocomplete="off"><button class="add" type="submit">確定</button></form>' +
+      '<div class="btns"><button class="btn sm line" data-act="pickTrade" data-arg="">不分工種</button><button class="btn sm line" data-act="pickCancel">取消</button></div></div>';
   }
 
   function dEdit() {
@@ -616,28 +679,33 @@ textarea.sm{min-height:120px;padding:12px}
           '<div class="between"><div class="h sm">工種、人數、今天做什麼</div><span class="chip teal">屋主看得到</span></div>' +
           S.trades.map(function (t) {
             var hints = TRADE_HINTS[t.name] || [];
+            var lines = tradeLines(t);
             return '<div class="trade-blk"><div class="trade"><span>' + esc(t.name) + '</span><div class="stepper">' +
               '<button data-act="trade" data-arg="' + t.id + ':-1" aria-label="' + esc(t.name) + '減少一人">−</button>' +
               '<span class="n">' + t.n + ' 人</span>' +
               '<button data-act="trade" data-arg="' + t.id + ':1" aria-label="' + esc(t.name) + '增加一人">+</button></div></div>' +
               (t.n > 0
-                ? '<label for="tw' + t.id + '" class="sr-only">' + esc(t.name) + '今天做什麼</label>' +
+                ? lines.map(function (e) { return '<div class="tline"><span>' + esc(e.work) + '</span><span class="chip ' + (e.pub ? 'teal">屋主看得到' : 'gray">僅內部') + '</span></div>'; }).join('') +
+                  '<label for="tw' + t.id + '" class="sr-only">' + esc(t.name) + '今天做什麼</label>' +
                   '<input id="tw' + t.id + '" class="txt full" data-trade-work="' + t.id + '" value="' + esc(t.work || '') + '" placeholder="今天做什麼，例如：天花下角料" autocomplete="off">' +
                   (hints.length ? '<div class="hints"><span class="muted">建議</span>' + hints.map(function (h, i) { return '<button class="hint" data-act="twork" data-arg="' + t.id + ':' + i + '">' + esc(h) + '</button>'; }).join('') + '</div>' : '')
                 : '<div class="muted">今天沒有人到場</div>') +
               '</div>';
           }).join('') +
-          '<div class="muted" style="margin-top:6px">建議來自內部進度表上施工中的項目和之前寫過的內容，點一下就填入</div>' +
+          '<div class="muted" style="margin-top:6px">建議來自內部進度表上施工中的項目和之前寫過的內容，點一下就填入。從工程內容連動的那一行，跟著該條內容的公開設定。</div>' +
         '</div>' +
         '<div class="card" style="padding:14px 16px">' +
           '<div class="between" style="margin-bottom:4px"><div class="h sm">工程內容</div><div class="muted">客戶可見 ' + pubE + ' / ' + S.entries.length + '</div></div>' +
           S.entries.map(function (e) {
-            return '<div class="entry"><div class="t">' + esc(e.text) + '</div>' +
-              '<button class="vis' + (e.pub ? ' on' : '') + '" data-act="entry" data-arg="' + e.id + '" aria-pressed="' + e.pub + '">' + (e.pub ? I.eye + '客戶可見' : I.lock + '僅內部') + '</button></div>';
+            return '<div class="entry"><div class="t">' + esc(e.text) + (e.trade ? '<div class="muted">連動工種：' + esc(e.trade) + '</div>' : '') + '</div>' +
+              '<button class="vis' + (e.pub ? ' on' : '') + '" data-act="entry" data-arg="' + e.id + '" aria-pressed="' + e.pub + '">' + (e.pub ? I.eye + '客戶可見' : I.lock + '僅內部') + '</button>' +
+              (e.added ? '<button class="del" data-act="entryDel" data-arg="' + e.id + '" aria-label="刪除這條工程內容">×</button>' : '') + '</div>';
           }).join('') +
-          '<form class="input-row" data-form="add"><label for="draft" class="sr-only">新增一條工程內容</label>' +
-            '<input id="draft" class="txt" data-input="draft" value="' + esc(S.draft) + '" placeholder="新增一條工程內容…" enterkeyhint="done" autocomplete="off">' +
-            '<button class="add" type="submit">新增</button></form>' +
+          (S.pendingEntry !== null ? entryPicker()
+            : '<form class="input-row" data-form="add"><label for="draft" class="sr-only">新增一條工程內容</label>' +
+              '<input id="draft" class="txt" data-input="draft" value="' + esc(S.draft) + '" placeholder="例如 水電：主臥插座修正" enterkeyhint="done" autocomplete="off">' +
+              '<button class="add" type="submit">新增</button></form>' +
+              (S.linkNote ? '<div class="muted" style="margin-top:8px;color:var(--teal-d)">' + esc(S.linkNote) + '</div>' : '')) +
         '</div>' +
         '<div class="card" style="padding:14px 16px">' +
           '<div class="between" style="margin-bottom:4px"><div class="h sm">現場照片</div><div class="muted">客戶可見 ' + pubP + ' / ' + S.photos.length + '</div></div>' +
@@ -652,10 +720,6 @@ textarea.sm{min-height:120px;padding:12px}
           }).join('') + '</div>' +
         '</div>' +
         '<div class="card" style="padding:14px 16px">' +
-          '<div class="between" style="margin-bottom:6px"><div class="h sm">待辦事項</div><span class="chip gray">固定僅內部</span></div>' +
-          TODOS.map(function (t) { return '<div class="body" style="padding:3px 0">· ' + esc(t) + '</div>'; }).join('') +
-        '</div>' +
-        '<div class="card" style="padding:14px 16px">' +
           '<div class="between" style="margin-bottom:6px"><div class="h sm">註記</div><span class="chip gray">固定僅內部</span></div>' +
           '<div class="body">' + esc(NOTE) + '</div>' +
         '</div>' +
@@ -666,7 +730,7 @@ textarea.sm{min-height:120px;padding:12px}
 
   function dConfirm() {
     var pub = currentPublic();
-    var privE = S.entries.length - pub.entries.length;
+    var privE = S.entries.filter(function (e) { return !e.pub; }).length;
     var privP = S.photos.length - pub.photos.length;
     var has = pub.work.length + pub.entries.length + pub.photos.length > 0;
     return '<div class="screen">' +
@@ -682,23 +746,11 @@ textarea.sm{min-height:120px;padding:12px}
         '</div>' +
         '<div class="card">' +
           '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px" class="h sm">' + I.lock + '<span>只留在內部</span></div>' +
-          '<div class="body" style="line-height:1.7">' + privE + ' 條工程內容、' + privP + ' 張照片<br>待辦事項、註記（固定內部）</div>' +
+          '<div class="body" style="line-height:1.7">' + privE + ' 條工程內容、' + privP + ' 張照片<br>註記（固定內部）</div>' +
         '</div>' +
         '<button class="toggle-row" data-act="notify" aria-pressed="' + S.notify + '"><span>同時推播 LINE 通知給屋主</span><span class="track"><i></i></span></button>' +
       '</div>' +
       '<div class="footer"><button class="btn teal" data-act="publish">' + (S.snapshot ? '更新發布' : '確認發布') + '</button></div>' +
-    '</div>';
-  }
-
-  function dReport() {
-    return '<div class="screen">' +
-      navbar('go', 'home', '返回案場', '本週工程匯報', '114/10/27（一）～ 114/11/02（日）', '<span class="chip ' + (S.reportSent ? 'teal">已發送' : 'amber">草稿') + '</span>') +
-      '<div class="scroll" data-scroll="d-report">' +
-        '<div class="tip">系統依「進度表」本週與下週的工程分項，自動排好草稿。可以直接修改文字再發送。</div>' +
-        '<label for="report" class="lbl">週報內容</label>' +
-        '<textarea id="report" data-input="report">' + esc(S.report) + '</textarea>' +
-      '</div>' +
-      '<div class="footer"><button class="btn ' + (S.reportSent ? 'line-teal' : 'teal') + '" data-act="send">' + (S.reportSent ? '已發送 · 再次發送更新版' : '發送給屋主（LINE）') + '</button></div>' +
     '</div>';
   }
 
@@ -800,25 +852,28 @@ textarea.sm{min-height:120px;padding:12px}
     var invalid = planInvalid();
     function opts(map, cur) { return Object.keys(map).map(function (k) { return '<option value="' + k + '"' + (k === cur ? ' selected' : '') + '>' + (map[k].label || map[k]) + '</option>'; }).join(''); }
     return '<div class="screen">' +
-      navbar('go', 'home', '返回案場', '屋主版工程時刻表', '大工種 · 跟內部細項分開排', dirty ? '<span class="chip amber">未更新</span>' : '<span class="chip teal">已是最新</span>') +
+      navbar('go', 'home', '返回案場', '現場工期調整', '屋主看的大工種時刻表', dirty ? '<span class="chip amber">未更新</span>' : '<span class="chip teal">已是最新</span>') +
       '<div class="scroll" data-scroll="d-plan">' +
-        '<div class="tip">' + I.eye + '<span>這份就是屋主在「進度」分頁看到的工程時刻表。改完按「更新給屋主」才會生效；上次更新：' + esc(S.planPubAt) + '</span></div>' +
+        '<div class="tip">' + I.eye + '<span>這份就是屋主在「進度」分頁看到的工程時刻表。日期跟原定不同時，變更的天數會用紅色標給屋主看。改完按「更新給屋主」才會生效；上次更新：' + esc(S.planPubAt) + '</span></div>' +
         S.plan.map(function (r) {
           var bad = !r.name.trim() || !r.start || !r.end || isoT(r.end) < isoT(r.start);
           var id = r.id;
+          var chg = planChanged(r);
           return '<div class="card' + (bad ? ' warn' : '') + '" style="padding:12px 14px">' +
             '<div class="between" style="gap:8px"><label for="pn' + id + '" class="sr-only">工種名稱</label>' +
               '<input id="pn' + id + '" class="txt" data-plan="' + id + ':name" value="' + esc(r.name) + '" autocomplete="off">' +
               '<button class="add" style="border-color:var(--gray-b);color:var(--ink2)" data-act="planDel" data-arg="' + id + '" aria-label="移除 ' + esc(r.name) + '">移除</button></div>' +
             '<div class="btns">' +
-              '<div class="fld"><label for="ps' + id + '" class="mini">開始</label><input id="ps' + id + '" type="date" class="date" style="width:100%" data-plan="' + id + ':start" value="' + r.start + '"></div>' +
-              '<div class="fld"><label for="pe' + id + '" class="mini">結束</label><input id="pe' + id + '" type="date" class="date" style="width:100%" data-plan="' + id + ':end" value="' + r.end + '"></div>' +
+              '<div class="fld"><label for="ps' + id + '" class="mini">開始</label><input id="ps' + id + '" type="date" class="date' + (r.origStart && r.start !== r.origStart || !r.origStart ? ' chg' : '') + '" style="width:100%" data-plan="' + id + ':start" value="' + r.start + '"></div>' +
+              '<div class="fld"><label for="pe' + id + '" class="mini">結束</label><input id="pe' + id + '" type="date" class="date' + (r.origStart && r.end !== r.origEnd || !r.origStart ? ' chg' : '') + '" style="width:100%" data-plan="' + id + ':end" value="' + r.end + '"></div>' +
             '</div>' +
             '<div class="btns">' +
               '<div class="fld"><label for="pt' + id + 'x" class="mini">狀態</label><select id="pt' + id + 'x" class="sel" data-plan="' + id + ':status">' + opts(PLAN_STATUS, r.status) + '</select></div>' +
               '<div class="fld"><label for="py' + id + '" class="mini">類型</label><select id="py' + id + '" class="sel" data-plan="' + id + ':type">' + opts(PLAN_TYPES, r.type) + '</select></div>' +
             '</div>' +
-            (bad ? '<div class="muted" style="color:var(--amber-d);margin-top:8px">請填工種名稱，結束日不能早於開始日</div>' : '') +
+            (bad ? '<div class="muted" style="color:var(--amber-d);margin-top:8px">請填工種名稱，結束日不能早於開始日</div>'
+              : chg ? '<div class="chg-note">現場調整：' + planChangeText(r) + '</div>'
+              : '<div class="muted" style="margin-top:8px">照原定日期</div>') +
           '</div>';
         }).join('') +
         '<button class="btn sm line" data-act="planAdd">＋ 新增一列</button>' +
@@ -828,62 +883,82 @@ textarea.sm{min-height:120px;padding:12px}
     '</div>';
   }
 
-  // ---------- Google 日曆（示意） ----------
-  function gcEvents(site) {
-    var plan = site.id === 'a' ? S.planPub : site.plan;
-    return plan.filter(function (r) { return r.type === 'work' || r.type === 'handover'; }).map(function (r) {
+  // ---------- 案場月曆 ----------
+  function calEvents(site) {
+    var plan = site.id === 'a' ? S.plan : site.plan;
+    return plan.filter(function (r) {
+      return (r.type === 'work' || r.type === 'handover') && r.start && r.end && isoT(r.end) >= isoT(r.start);
+    }).map(function (r) {
       return { site: site, name: r.name, a: isoT(r.start), b: isoT(r.end), handover: r.type === 'handover' };
     });
   }
-  function gcVisible() {
-    return GC_SITES.filter(function (st) { return S.gcAs === 'admin' || (S.gcMembers[st.id] || []).indexOf(S.gcAs) >= 0; });
+  function calVisible() {
+    return CAL_SITES.filter(function (st) { return S.calAs === 'admin' || (S.calMembers[st.id] || []).indexOf(S.calAs) >= 0; });
   }
-  function dGcal() {
-    var sites = gcVisible();
-    var y = +S.gcMonth.slice(0, 4), m = +S.gcMonth.slice(5);
-    var m0 = Date.UTC(y, m - 1, 1), m1 = Date.UTC(y, m, 0);
-    var evs = [];
-    sites.forEach(function (st) { gcEvents(st).forEach(function (e) { if (e.b >= m0 && e.a <= m1) evs.push(e); }); });
-    var byDay = {};
-    evs.forEach(function (e) { var k = Math.max(e.a, m0); (byDay[k] = byDay[k] || []).push(e); });
-    var days = Object.keys(byDay).map(Number).sort(function (a, b) { return a - b; });
-    var agenda = days.length ? days.map(function (k) {
-      return '<div class="gc-day"><div class="gc-date">' + md(k) + '</div><div class="gc-evs">' +
-        byDay[k].sort(function (a, b) { return a.a - b.a; }).map(function (e) {
-          var range = e.a === e.b ? '整天' : md(e.a) + ' – ' + md(e.b) + (e.a < m0 ? '（進行中）' : '');
-          return '<div class="gc-ev" style="background:' + e.site.color + '">' + (e.handover ? '★ ' : '') + esc(e.name) + '｜' + esc(e.site.name) + '<span class="s">' + range + '</span></div>';
-        }).join('') + '</div></div>';
-    }).join('') : '<div class="body">這個月沒有排程</div>';
-    var who = ['admin', 'A', 'B'].map(function (k) {
-      return '<button data-act="gcas" data-arg="' + k + '" aria-pressed="' + (S.gcAs === k) + '">' + GC_PEOPLE[k] + '</button>';
+  // 一週一列：先排多日橫條的上下位置（同一條不重疊），再疊在日期格上
+  function calWeek(w, evs, m0, m1) {
+    var last = w + 6 * DAY;
+    var lanes = [];
+    var bars = evs.filter(function (e) { return e.b >= w && e.a <= last; }).sort(function (x, y) { return x.a - y.a || y.b - x.b; }).map(function (e) {
+      var a = Math.max(e.a, w), b = Math.min(e.b, last), l = 0;
+      while (lanes[l] !== undefined && lanes[l] >= a) l++;
+      lanes[l] = b;
+      return '<div class="mc-bar' + (e.a >= w ? ' s' : '') + (e.b <= last ? ' e' : '') + '" style="grid-row:' + (l + 2) + ';grid-column:' + ((a - w) / DAY + 1) + ' / span ' + ((b - a) / DAY + 1) + ';background:' + e.site.color + '">' + (e.handover ? '★ ' : '') + esc(e.name) + '</div>';
     }).join('');
-    var legend = '<div class="legend" style="font-size:12px">' + sites.map(function (st) { return '<span style="display:inline-flex;align-items:center;gap:6px"><span class="gc-dot" style="background:' + st.color + '"></span>' + esc(st.name) + '</span>'; }).join('') + '</div>';
-    var members = S.gcAs === 'admin'
+    var cells = '';
+    for (var i = 0; i < 7; i++) {
+      var t = w + i * DAY;
+      cells += '<button class="mc-day' + (t < m0 || t > m1 ? ' out' : '') + (t === TODAY ? ' today' : '') + '" style="grid-column:' + (i + 1) + '" data-act="dcalday" data-arg="' + t + '" aria-pressed="' + (S.calDay === t) + '" aria-label="' + md(t) + '"><b>' + new Date(t).getUTCDate() + '</b></button>';
+    }
+    return '<div class="mc-week" style="grid-template-rows:28px repeat(' + Math.max(lanes.length, 3) + ',19px)">' + cells + bars + '</div>';
+  }
+  function dCal() {
+    var sites = calVisible();
+    var y = +S.calMonth.slice(0, 4), m = +S.calMonth.slice(5);
+    var m0 = Date.UTC(y, m - 1, 1), m1 = Date.UTC(y, m, 0);
+    var first = m0 - new Date(m0).getUTCDay() * DAY;
+    var end = m1 + (6 - new Date(m1).getUTCDay()) * DAY;
+    var evs = [];
+    sites.forEach(function (st) { evs = evs.concat(calEvents(st)); });
+    var weeks = '';
+    for (var w = first; w <= end; w += 7 * DAY) weeks += calWeek(w, evs, m0, m1);
+    var dayEvs = evs.filter(function (e) { return e.a <= S.calDay && e.b >= S.calDay; }).sort(function (a, b) { return a.a - b.a; });
+    var who = ['admin', 'A', 'B'].map(function (k) {
+      return '<button data-act="dcalas" data-arg="' + k + '" aria-pressed="' + (S.calAs === k) + '">' + CAL_PEOPLE[k] + '</button>';
+    }).join('');
+    var legend = '<div class="legend" style="font-size:12px">' + sites.map(function (st) { return '<span style="display:inline-flex;align-items:center;gap:6px"><span class="site-dot" style="background:' + st.color + '"></span>' + esc(st.name) + '</span>'; }).join('') + '</div>';
+    var members = S.calAs === 'admin'
       ? '<div class="card" style="padding:14px 16px">' +
-          '<div class="between" style="margin-bottom:4px"><div class="h sm">案場成員</div><span class="chip gray">像 Google 雲端硬碟分享</span></div>' +
-          '<div class="muted" style="margin-bottom:4px">勾選哪位設計師負責，系統就把那本日曆分享給他（只能查看）</div>' +
-          GC_SITES.map(function (st) {
-            var mem = S.gcMembers[st.id] || [];
-            return '<div class="mem"><div class="nm"><span class="gc-dot" style="background:' + st.color + '"></span>' + esc(st.name) + '</div>' +
-              ['A', 'B'].map(function (p) { var on = mem.indexOf(p) >= 0; return '<button class="mbtn" data-act="gcmem" data-arg="' + st.id + ':' + p + '" aria-pressed="' + on + '">' + (on ? '✓ ' : '') + GC_PEOPLE[p] + '</button>'; }).join('') +
+          '<div class="h sm" style="margin-bottom:4px">案場成員</div>' +
+          '<div class="muted" style="margin-bottom:4px">勾選哪位設計師負責，他的月曆就會出現這個案場</div>' +
+          CAL_SITES.map(function (st) {
+            var mem = S.calMembers[st.id] || [];
+            return '<div class="mem"><div class="nm"><span class="site-dot" style="background:' + st.color + '"></span>' + esc(st.name) + '</div>' +
+              ['A', 'B'].map(function (p) { var on = mem.indexOf(p) >= 0; return '<button class="mbtn" data-act="dcalmem" data-arg="' + st.id + ':' + p + '" aria-pressed="' + on + '">' + (on ? '✓ ' : '') + CAL_PEOPLE[p] + '</button>'; }).join('') +
               '</div>';
           }).join('') +
           '<div class="muted" style="margin-top:6px">專案管理者固定看得到全部案場</div>' +
         '</div>'
-      : '<div class="tip">' + I.lock + '<span>' + GC_PEOPLE[S.gcAs] + ' 只看得到負責的 ' + sites.length + ' 個案場' + (sites.length ? '：' + sites.map(function (st) { return esc(st.name); }).join('、') : '') + '。點事件會有「在系統裡打開」的連結，細項到系統裡看。</span></div>';
+      : '<div class="tip">' + I.lock + '<span>' + CAL_PEOPLE[S.calAs] + ' 只看得到負責的 ' + sites.length + ' 個案場' + (sites.length ? '：' + sites.map(function (st) { return esc(st.name); }).join('、') : '') + '。</span></div>';
     return '<div class="screen">' +
-      navbar('go', 'home', '返回案場', 'Google 日曆預覽', '示意畫面 · 不會真的連到 Google') +
-      '<div class="scroll" data-scroll="d-gcal">' +
-        '<div class="tip">' + I.eye + '<span>每個案場一本日曆，系統自動寫入屋主版時刻表的大工種起訖和交屋。改時刻表後按「更新給屋主」，日曆也會跟著更新。</span></div>' +
-        '<div><div class="lbl">用誰的身分看</div><div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr))" role="group" aria-label="切換身分">' + who + '</div></div>' +
-        members +
-        '<div class="card" style="padding:14px 16px">' +
-          '<div class="mchips" role="group" aria-label="選擇月份" style="margin-bottom:10px">' + GC_MONTHS.map(function (mk) {
-            return '<button class="mchip" data-act="gcm" data-arg="' + mk + '" aria-pressed="' + (S.gcMonth === mk) + '">' + (mk.slice(0, 4) !== '2025' ? mk.slice(0, 4) + '/' : '') + (+mk.slice(5)) + ' 月</button>';
-          }).join('') + '</div>' +
-          (sites.length ? legend : '') +
-          '<div style="margin-top:8px">' + (sites.length ? agenda : '<div class="body">還沒有分到任何案場</div>') + '</div>' +
+      navbar('go', 'home', '返回案場', '案場月曆', '大工種與交屋 · 只有工作室看得到') +
+      '<div class="scroll" data-scroll="d-cal">' +
+        '<div class="mchips" role="group" aria-label="選擇月份">' + PLAN_MONTHS.map(function (mk) {
+          return '<button class="mchip" data-act="dcalm" data-arg="' + mk + '" aria-pressed="' + (S.calMonth === mk) + '">' + (+mk.slice(5)) + ' 月</button>';
+        }).join('') + '</div>' +
+        (sites.length ? legend : '') +
+        '<div class="card" style="padding:0;overflow:hidden">' +
+          '<div class="mc-head" aria-hidden="true">' + WK.split('').map(function (d) { return '<span>' + d + '</span>'; }).join('') + '</div>' +
+          weeks +
         '</div>' +
+        '<div class="card" style="padding:14px 16px">' +
+          '<div class="h sm" style="margin-bottom:4px">' + md(S.calDay) + '</div>' +
+          (dayEvs.length ? dayEvs.map(function (e) {
+            return '<div class="dotrow"><span class="dot" style="background:' + e.site.color + '"></span><div><div class="li" style="padding:0">' + (e.handover ? '★ ' : '') + esc(e.name) + '</div><div class="muted">' + esc(e.site.name) + ' · ' + (e.a === e.b ? '當天' : md(e.a) + ' – ' + md(e.b)) + '</div></div></div>';
+          }).join('') : '<div class="body">' + (sites.length ? '這天沒有排工程' : '還沒有分到任何案場') + '</div>') +
+        '</div>' +
+        '<div><div class="lbl">用誰的身分看（試用時切換）</div><div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr))" role="group" aria-label="切換身分">' + who + '</div></div>' +
+        members +
       '</div>' +
     '</div>';
   }
@@ -928,7 +1003,6 @@ textarea.sm{min-height:120px;padding:12px}
         (top.photos.length || more ? '<div class="muted" style="margin-top:6px">' + (top.photos.length ? top.photos.length + ' 張現場照片' + more : more.slice(1)) + '</div>' : '') +
         '<button class="btn sm line-teal" style="margin-top:10px" data-act="tab" data-arg="log">看工程日誌</button>' +
       '</div>' +
-      (S.reportSent ? '<div class="card"><div class="h" style="margin-bottom:8px">本週工程匯報</div><div class="pre">' + esc(S.sentReport) + '</div></div>' : '') +
       planBrief();
   }
 
@@ -973,12 +1047,14 @@ textarea.sm{min-height:120px;padding:12px}
     plan.forEach(function (r) { cnt[r.status]++; });
     var legend = '<div class="legend"><span><i style="background:#D9A3A0"></i>好日子</span>' +
       Object.keys(PLAN_TYPES).map(function (k) { return '<span><i style="background:' + PLAN_TYPES[k].color + '"></i>' + PLAN_TYPES[k].label + '</span>'; }).join('') +
-      '<span><i style="background:#D5DAE0"></i>週末</span></div>';
+      '<span><i style="background:#D5DAE0"></i>週末</span>' +
+      (plan.some(planChanged) ? '<span><i style="background:var(--red)"></i>現場調整</span><span><i class="was"></i>原定日期</span>' : '') + '</div>';
     var body;
     if (S.cPlanView === 'list') {
       body = '<div class="card" style="padding:6px 16px">' + plan.map(function (r) {
         return '<div class="tl" style="padding:12px 0"><div class="between" style="align-items:flex-start"><span class="name" style="font-size:14px">' + esc(r.name) + '</span><span class="chip ' + ST_CHIP[r.status] + '">' + PLAN_STATUS[r.status] + '</span></div>' +
-          '<div class="range" style="font-size:12px;display:flex;align-items:center;gap:6px"><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:' + PLAN_TYPES[r.type].color + '"></i>' + planRange(r) + '</div></div>';
+          '<div class="range" style="font-size:12px;display:flex;align-items:center;gap:6px' + (planChanged(r) ? ';color:var(--red-d);font-weight:500' : '') + '"><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:' + (planChanged(r) ? 'var(--red)' : PLAN_TYPES[r.type].color) + '"></i>' + planRange(r) + '</div>' +
+          (planChanged(r) ? '<div class="chg-note" style="margin-top:2px">現場調整：' + planChangeText(r) + '</div>' : '') + '</div>';
       }).join('') + '</div>';
     } else {
       body = '<div class="mchips" role="group" aria-label="選擇月份">' + PLAN_MONTHS.map(function (m) {
@@ -1007,9 +1083,14 @@ textarea.sm{min-height:120px;padding:12px}
     var rows = plan.map(function (r) {
       var a = isoT(r.start), b = isoT(r.end);
       var dot = '<span style="display:inline-block;width:6px;height:6px;border-radius:3px;margin-right:4px;vertical-align:1px;background:' + (r.status === 'done' ? 'var(--teal)' : r.status === 'doing' ? 'var(--amber)' : 'var(--bar-todo)') + '"></span>';
-      return '<tr><th class="nm" scope="row" title="' + esc(r.name) + '">' + dot + esc(r.name) + '</th>' + cols.map(function (c) {
-        var on = c.t >= a && c.t <= b && !(c.we && (r.type === 'work' || r.type === 'measure'));
-        return '<td class="' + (c.we ? 'we' : '') + (c.today ? ' today' : '') + '"' + (on ? ' style="background:' + PLAN_TYPES[r.type].color + '"' : '') + '></td>';
+      var chg = planChanged(r);
+      return '<tr><th class="nm' + (chg ? ' chg' : '') + '" scope="row" title="' + esc(r.name) + (chg ? '（' + planChangeText(r) + '）' : '') + '">' + dot + esc(r.name) + (chg ? '<span class="sr-only">（現場調整：' + planChangeText(r) + '）</span>' : '') + '</th>' + cols.map(function (c) {
+        var off = c.we && (r.type === 'work' || r.type === 'measure');
+        var on = c.t >= a && c.t <= b && !off;
+        var orig = planInOrig(r, c.t);
+        var was = !on && orig && !off;
+        // 原定就有的天數用原本的顏色；原定以外的天數（現場調整）用紅色
+        return '<td class="' + (c.we ? 'we' : '') + (was ? ' was' : '') + (c.today ? ' today' : '') + '"' + (on ? ' style="background:' + (orig ? PLAN_TYPES[r.type].color : 'var(--red)') + '"' : '') + '></td>';
       }).join('') + '</tr>';
     }).join('');
     return '<div class="cal-wrap"><table class="cal"><thead>' + head1 + head2 + '</thead><tbody>' + rows + '</tbody></table></div>';
@@ -1055,7 +1136,7 @@ textarea.sm{min-height:120px;padding:12px}
   }
 
   function designerApp() {
-    var m = { edit: dEdit, confirm: dConfirm, report: dReport, albums: dAlbums, issues: dIssues, convert: dConvert, sched: dSched, plan: dPlan, gcal: dGcal };
+    var m = { edit: dEdit, confirm: dConfirm, albums: dAlbums, issues: dIssues, convert: dConvert, sched: dSched, plan: dPlan, cal: dCal };
     return (m[S.dScreen] || dHome)() + toastHtml(S.dToast);
   }
 
@@ -1108,7 +1189,7 @@ textarea.sm{min-height:120px;padding:12px}
   }
   var ACT = {
     go: function (arg) {
-      var patch = { dScreen: arg, dToast: null };
+      var patch = { dScreen: arg, dToast: null, linkNote: null };
       if (arg === 'albums') patch.dAlbum = null;
       set(patch);
     },
@@ -1137,9 +1218,30 @@ textarea.sm{min-height:120px;padding:12px}
     add: function () {
       var input = document.getElementById('draft');
       var text = (input ? input.value : S.draft).trim();
-      if (text) set({ draft: '', nextId: S.nextId + 1, entries: S.entries.concat([{ id: S.nextId, text: text, pub: false }]) });
+      if (text) {
+        var parsed = parseEntry(text);
+        set(parsed ? entryPatch(text, parsed.trade, parsed.work) : { draft: '', pendingEntry: text, linkNote: null });
+      }
       input = document.getElementById('draft');
       if (input) input.focus();
+    },
+    pickTrade: function (arg) { if (S.pendingEntry !== null) set(entryPatch(S.pendingEntry, arg, S.pendingEntry)); },
+    pickNew: function () {
+      var input = document.getElementById('pendingTrade');
+      var name = input ? input.value.trim() : '';
+      if (name) ACT.pickTrade(name); else if (input) input.focus();
+    },
+    pickCancel: function () { set({ draft: S.pendingEntry || '', pendingEntry: null }); },
+    entryDel: function (arg) {
+      var e = findById(S.entries, arg);
+      if (!e) return;
+      var entries = S.entries.filter(function (x) { return x !== e; });
+      // 連動時自動多出來的工種，沒有其他內容和照片在用，就一起拿掉
+      var trades = S.trades.filter(function (t) {
+        return !(t.auto && t.name === e.trade && !(t.work || '').trim() &&
+          !entries.some(function (x) { return x.trade === t.name; }) && !S.photos.some(function (p) { return p.trade === t.name; }));
+      });
+      set({ entries: entries, trades: trades, linkNote: null });
     },
     done: function () { set({ showDone: !S.showDone }); },
     notify: function () { set({ notify: !S.notify }); },
@@ -1151,7 +1253,6 @@ textarea.sm{min-height:120px;padding:12px}
       set(patch);
     },
     unpublish: function () { set({ snapshot: null, toast: null, clientNew: false, snack: null }); },
-    send: function () { set(Object.assign({ reportSent: true, sentReport: S.report, dScreen: 'home' }, notifyClient('本週工程匯報已送達，點此查看', 'home', '週報已發送給屋主'))); },
     toast: function () {
       var go = S.toast && S.toast.go || 'home';
       var patch = { toast: null, clientNew: false, cAlbum: null, cConfirm: null, cPick: null };
@@ -1207,17 +1308,22 @@ textarea.sm{min-height:120px;padding:12px}
       if (!title) { if (input) input.focus(); return; }
       set({ issues: [{ id: S.nextIssue, title: title, detail: '', level: S.issueLevel, status: '回報', at: '10/30', converted: false }].concat(S.issues), nextIssue: S.nextIssue + 1, issueDraft: '' });
     },
-    // Google 日曆示意
-    gcas: function (arg) { set({ gcAs: arg }); },
-    gcm: function (arg) { set({ gcMonth: arg }); },
-    gcmem: function (arg) {
+    // 案場月曆
+    dcalas: function (arg) { set({ calAs: arg }); },
+    dcalm: function (arg) {
+      var y = +arg.slice(0, 4), m = +arg.slice(5);
+      var inMonth = TODAY >= Date.UTC(y, m - 1, 1) && TODAY <= Date.UTC(y, m, 0);
+      set({ calMonth: arg, calDay: inMonth ? TODAY : Date.UTC(y, m - 1, 1) });
+    },
+    dcalday: function (arg) { set({ calDay: +arg }); },
+    dcalmem: function (arg) {
       var p = arg.split(':');
-      var mem = Object.assign({}, S.gcMembers);
+      var mem = Object.assign({}, S.calMembers);
       var list = (mem[p[0]] || []).slice();
       var i = list.indexOf(p[1]);
       if (i >= 0) list.splice(i, 1); else list.push(p[1]);
       mem[p[0]] = list;
-      set({ gcMembers: mem });
+      set({ calMembers: mem });
     },
     // 屋主版工程時刻表
     calm: function (arg) { set({ cMonth: arg }); },
@@ -1269,6 +1375,7 @@ textarea.sm{min-height:120px;padding:12px}
     var f = ev.target.getAttribute('data-form');
     if (f === 'add') { ev.preventDefault(); ACT.add(); }
     if (f === 'issue') { ev.preventDefault(); ACT.addIssue(); }
+    if (f === 'pendingTrade') { ev.preventDefault(); ACT.pickNew(); }
   });
 
   render();
